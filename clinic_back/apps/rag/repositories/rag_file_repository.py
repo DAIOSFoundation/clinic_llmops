@@ -11,6 +11,7 @@ import os
 from core.exceptions.app_exception import AppException
 
 import uuid
+from typing import List
 
 
 class RagFileRepository:
@@ -49,5 +50,5 @@ class RagFileRepository:
             raise AppException(f"Failed RagFile upload: {e}")
 
     @staticmethod
-    def update_rag_files(rag_id: uuid.UUID, rag_file_ids: list[uuid.UUID]) -> None:
+    def update_rag_files(rag_id: uuid.UUID, rag_file_ids: List[uuid.UUID]) -> None:
         RagFile.objects.filter(id__in=rag_file_ids).update(rag_id=rag_id)

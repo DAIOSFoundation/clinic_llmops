@@ -6,8 +6,8 @@ class CoreConfig(AppConfig):
     name = "core"
 
     def ready(self):
-        from core.utils.model_loader import load_all_models
-
-        load_all_models()
+        # from core.utils.model_loader import load_all_models
+        # load_all_models()
+        pass
 
 

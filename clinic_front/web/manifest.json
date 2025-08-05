@@ -1,11 +1,11 @@
 {
-    "name": "banya_llmops",
-    "short_name": "banya_llmops",
+    "name": "NXDF LLMOPS",
+    "short_name": "NXDF LLMOPS",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "NXDF LLMOPS - RAG 기반 문서 검색 및 질의응답 시스템",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

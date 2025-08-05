@@ -14,7 +14,7 @@ class LoginRemoteDataSource implements LoginDataSource {
   LoginRemoteDataSource(this.networkService);
 
   @override
-  Future<UserModel> login(LoginModel loginModel) async {
+  Future<LoginResponseModel> login(LoginModel loginModel) async {
     const String endpoint = '/api/v1/users/login';
     try {
       final encodedHeader = Base64Encoder.encodeCredentials(
@@ -54,13 +54,7 @@ class LoginRemoteDataSource implements LoginDataSource {
       // JWT 토큰 응답 처리
       final loginResponse = LoginResponseModel.fromJson(data);
 
-      // 토큰 저장
-      await TokenService.saveTokens(
-        accessToken: loginResponse.accessToken,
-        refreshToken: loginResponse.refreshToken,
-      );
-
-      return loginResponse.user;
+      return loginResponse;
     } on ApiException {
       rethrow;
     } catch (e) {

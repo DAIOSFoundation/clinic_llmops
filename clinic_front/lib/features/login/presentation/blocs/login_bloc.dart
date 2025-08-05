@@ -4,14 +4,18 @@ import 'package:banya_llmops/features/login/domain/entities/login_entity.dart';
 import 'package:banya_llmops/features/login/domain/usecases/login_usecase.dart';
 import 'package:banya_llmops/features/login/presentation/blocs/login_event.dart';
 import 'package:banya_llmops/features/login/presentation/blocs/login_state.dart';
+import 'package:banya_llmops/shared/services/auth_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginUsecase loginUsecase;
   final AuthBloc authBloc;
+  final AuthService authService;
 
   LoginBloc({required this.loginUsecase, required this.authBloc})
-    : super(LoginInitial()) {
+    : authService = GetIt.instance<AuthService>(),
+      super(LoginInitial()) {
     on<LoginSubmitted>(_onLoginSubmitted);
   }
 
@@ -29,7 +33,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       final result = await loginUsecase(loginEntity);
 
-      authBloc.add(LoggedIn(user: result));
+      // AuthService 업데이트
+      await authService.onLoginSuccess(
+        result.accessToken,
+        result.refreshToken,
+      );
+
+      authBloc.add(LoggedIn(user: result.user.toEntity()));
 
       emit(LoginSuccess());
     } catch (e) {

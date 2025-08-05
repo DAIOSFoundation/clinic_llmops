@@ -1,5 +1,4 @@
-import 'package:banya_llmops/core/entities/user_entity.dart';
-import 'package:banya_llmops/data/mappers/user_mapper.dart';
+import 'package:banya_llmops/data/models/login_response_model.dart';
 import 'package:banya_llmops/features/login/data/datasources/login_datasource.dart';
 import 'package:banya_llmops/features/login/data/mappers/login_mapper.dart';
 import 'package:banya_llmops/features/login/domain/entities/login_entity.dart';
@@ -10,11 +9,10 @@ class LoginRepositoryImpl extends LoginRepository {
   LoginRepositoryImpl({required this.loginDataSource});
 
   @override
-  Future<UserEntity> login(LoginEntity loginEntity) async {
+  Future<LoginResponseModel> login(LoginEntity loginEntity) async {
     try {
-      final user = await loginDataSource.login(loginEntity.toModel());
-
-      return user.toEntity();
+      final response = await loginDataSource.login(loginEntity.toModel());
+      return response;
     } catch (e) {
       rethrow;
     }

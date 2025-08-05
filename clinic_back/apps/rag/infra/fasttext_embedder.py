@@ -1,4 +1,5 @@
 import numpy as np
+from typing import List, Dict
 from core.utils.model_loader import get_fasttext_model
 
 
@@ -14,7 +15,7 @@ def get_text_embedding(text: str) -> np.ndarray:
     return fasttext_model.get_sentence_vector(text)
 
 
-def serialize_similarity_results(results: list) -> list[dict]:
+def serialize_similarity_results(results: list) -> List[Dict]:
     """
     유사도 검색 결과를 직렬화된 딕셔너리 리스트로 변환합니다.
     """
@@ -46,7 +47,7 @@ def serialize_similarity_results(results: list) -> list[dict]:
     return serialized_docs
 
 
-def fasttext_similarity_search(query: str, docs: list, top_k: int = 5) -> list:
+def fasttext_similarity_search(query: str, docs: list, top_k: int = 5) -> List:
     """
     주어진 쿼리에 대해 문서 목록에서 FastText 기반 유사도 검색을 수행합니다.
     """

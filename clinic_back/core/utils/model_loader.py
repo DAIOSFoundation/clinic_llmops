@@ -1,4 +1,4 @@
-import spacy
+# import spacy  # 주석 처리
 from sentence_transformers import SentenceTransformer
 from django.conf import settings
 import logging
@@ -6,7 +6,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 import fasttext
 import os
 
-import google.generativeai as genai
+# import google.generativeai as genai  # 주석 처리
 from typing import Dict, List, Literal, TypedDict, Optional
 
 logger = logging.getLogger(__name__)

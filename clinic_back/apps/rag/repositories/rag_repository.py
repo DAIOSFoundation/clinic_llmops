@@ -1,7 +1,7 @@
 from apps.rag.models import Rag, RagFile
 from apps.rag.entities import RagEntity, RagFileEntity
 
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 
 import uuid
 
@@ -23,7 +23,7 @@ class RagRepository:
         )
 
     @staticmethod
-    def get_all(user_id: uuid.UUID) -> list[RagEntity]:
+    def get_all(user_id: uuid.UUID) -> List[RagEntity]:
         try:
             rags = Rag.objects.filter(user_id=user_id).order_by("-created_at")
             return [RagRepository.to_entity(rag) for rag in rags]

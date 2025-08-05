@@ -51,7 +51,7 @@ class _LoginWidgetState
     _passwordController.addListener(
       _updateButtonState,
     );
-    _emailController.text = 'tony@banya.ai';
+    _emailController.text = 'test@example.com';
     _passwordController.text = 'test1234';
   }
 

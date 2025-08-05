@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import uuid
 from apps.rag.models import RagFile, Rag
 from apps.rag.services.rag_file_service import RagFileService
-from typing import Optional
+from typing import Optional, List, Union
 from apps.rag.infra.faiss_vector_store_manager import (
     create_or_update_faiss_vector_store,
     delete_faiss_vector_store,
@@ -15,7 +15,7 @@ import uuid
 
 class RagService:
     @staticmethod
-    def get_all(user_id: uuid.UUID) -> list[RagEntity] | None:
+    def get_all(user_id: uuid.UUID) -> Union[List[RagEntity], None]:
         try:
             rags = RagRepository.get_all(user_id)
         except ObjectDoesNotExist:
@@ -24,7 +24,7 @@ class RagService:
 
     @staticmethod
     def create(
-        user_id: uuid.UUID, name: str, description: str, rag_file_ids: list[int]
+        user_id: uuid.UUID, name: str, description: str, rag_file_ids: List[int]
     ) -> RagEntity:
         try:
             rag = RagRepository.create(
@@ -51,7 +51,7 @@ class RagService:
             raise
 
     @staticmethod
-    def get_by_id(id: uuid.UUID, user_id: uuid.UUID) -> RagEntity | None:
+    def get_by_id(id: uuid.UUID, user_id: uuid.UUID) -> Union[RagEntity, None]:
         return RagRepository.get_by_id(id, user_id)
 
     @staticmethod
@@ -60,7 +60,7 @@ class RagService:
         user_id: uuid.UUID,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        rag_file_ids: Optional[list[uuid.UUID]] = None,
+        rag_file_ids: Optional[List[uuid.UUID]] = None,
     ) -> Optional[RagEntity]:
         try:
             rag = Rag.objects.get(id=id, user_id=user_id)

@@ -26,8 +26,8 @@ extension _EnvProperties
     on
         AppEnvironment {
   static const _appNames = {
-    AppEnvironment.DEV: 'Daition LLMOps',
-    AppEnvironment.PROD: 'Daition LLMOps',
+    AppEnvironment.DEV: 'NXDF LLMOps',
+    AppEnvironment.PROD: 'NXDF LLMOps',
   };
 
   static const _baseURLs = {

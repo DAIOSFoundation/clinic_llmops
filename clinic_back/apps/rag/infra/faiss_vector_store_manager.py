@@ -3,12 +3,13 @@ import shutil
 from django.conf import settings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
+from typing import List
 from core.utils.model_loader import (
     get_huggingface_embeddings_model,
 )
 
 
-def create_or_update_faiss_vector_store(chunks: list[Document], vector_store_id: str):
+def create_or_update_faiss_vector_store(chunks: List[Document], vector_store_id: str):
     """
     주어진 청크로 FAISS 벡터 스토어를 생성하거나 기존 스토어를 업데이트합니다.
     """

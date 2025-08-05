@@ -48,6 +48,12 @@ class _SignupScreenState extends State<SignupScreen> {
     for (final controller in _controllers) {
       controller.addListener(_updateButtonState);
     }
+    
+    // 테스트용 초기값 설정 (개발 환경에서만 사용)
+    _emailController.text = 'newuser@example.com';
+    _nameController.text = '새 사용자';
+    _passwordController.text = 'newpassword123';
+    _passwordConfirmController.text = 'newpassword123';
   }
 
   @override
