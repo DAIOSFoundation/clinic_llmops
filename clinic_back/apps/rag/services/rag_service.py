@@ -1,0 +1,114 @@
+from apps.rag.repositories import RagRepository, RagFileRepository
+from apps.rag.entities import RagEntity
+from django.core.exceptions import ObjectDoesNotExist
+import uuid
+from apps.rag.models import RagFile, Rag
+from apps.rag.services.rag_file_service import RagFileService
+from typing import Optional
+from apps.rag.infra.faiss_vector_store_manager import (
+    create_or_update_faiss_vector_store,
+    delete_faiss_vector_store,
+)
+
+import uuid
+
+
+class RagService:
+    @staticmethod
+    def get_all(user_id: uuid.UUID) -> list[RagEntity] | None:
+        try:
+            rags = RagRepository.get_all(user_id)
+        except ObjectDoesNotExist:
+            return None
+        return rags
+
+    @staticmethod
+    def create(
+        user_id: uuid.UUID, name: str, description: str, rag_file_ids: list[int]
+    ) -> RagEntity:
+        try:
+            rag = RagRepository.create(
+                user_id=user_id,
+                name=name,
+                description=description,
+            )
+
+            RagFileRepository.update_rag_files(rag_id=rag.id, rag_file_ids=rag_file_ids)
+
+            rag_files = RagFile.objects.filter(id__in=rag_file_ids)
+
+            all_chunks = []
+            for rf in rag_files:
+                chunks = RagFileService.load_and_split_document(
+                    rf.public_url, rf.name, rf.public_url
+                )
+                all_chunks.extend(chunks)
+
+            if all_chunks:
+                create_or_update_faiss_vector_store(all_chunks, rag.id)
+            return rag
+        except:
+            raise
+
+    @staticmethod
+    def get_by_id(id: uuid.UUID, user_id: uuid.UUID) -> RagEntity | None:
+        return RagRepository.get_by_id(id, user_id)
+
+    @staticmethod
+    def update(
+        id: uuid.UUID,
+        user_id: uuid.UUID,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        rag_file_ids: Optional[list[uuid.UUID]] = None,
+    ) -> Optional[RagEntity]:
+        try:
+            rag = Rag.objects.get(id=id, user_id=user_id)
+
+            if name is not None:
+                rag.name = name
+            if description is not None:
+                rag.description = description
+            rag.save()
+
+            if rag_file_ids:
+                RagFileRepository.update_rag_files(
+                    rag_id=rag.id, rag_file_ids=rag_file_ids
+                )
+                rag_files = RagFile.objects.filter(id__in=rag_file_ids)
+
+                all_chunks = []
+                for rf in rag_files:
+                    chunks = RagFileService.load_and_split_document(
+                        rf.public_url, rf.name, rf.public_url
+                    )
+                    all_chunks.extend(chunks)
+
+                if all_chunks:
+                    create_or_update_faiss_vector_store(
+                        all_chunks,
+                        rag.id,
+                    )
+
+            return RagRepository.get_by_id(id, user_id)
+        except Rag.DoesNotExist:
+            return None
+        except Exception:
+            raise
+
+    @staticmethod
+    def delete(id: uuid.UUID, user_id: uuid.UUID) -> bool:
+        try:
+            rag = Rag.objects.get(id=id, user_id=user_id)
+
+            if rag.id:
+                delete_faiss_vector_store(rag.id)
+
+            RagFile.objects.filter(rag_id=id).update(rag_id=None)
+
+            rag.delete()
+            return True
+        except Rag.DoesNotExist:
+            return False
+        except Exception:
+            raise

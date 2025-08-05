@@ -1,0 +1,133 @@
+from dotenv import load_dotenv
+import os
+from google.oauth2 import service_account
+
+
+load_dotenv()
+
+TIME_ZONE = "UTC"
+DEFAULT_CHARSET = "utf-8"
+DEBUG = False
+
+ALLOWED_HOSTS = ["*"]
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "https://dation-app-demo.web.app",
+# ]
+INSTALLED_APPS = [
+    "corsheaders",
+]
+
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "core.middleware.jwt_auth.JWTAuthMiddleware",
+    "core.middleware.wrap_response.WrapResponseMiddleware",
+]
+
+INSTALLED_APPS = [
+    "core.apps.CoreConfig",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "rest_framework",
+    "storages",
+    "apps.user",
+    "apps.rag",
+]
+REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "core.exceptions.exception_handler.base_exception_handler",
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+}
+
+ROOT_URLCONF = "config.urls"
+
+# ENV
+SECRET_KEY = os.getenv("SECRET_KEY")
+REDIS_URL = os.getenv("REDIS_URL")
+
+
+# PATH
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Database
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+    }
+}
+
+# Data 파일 경로
+DATA_DIR = os.path.join(BASE_DIR, "data")
+
+# RAG 인덱스 파일 경로
+RAG_FAISS_INDEX_PATH = os.path.join(DATA_DIR, "rag")
+
+# FasetText 모델 경로
+MODEL_DIR = os.path.join(BASE_DIR, "models")
+
+# FasetText 모델 이름
+FASTTEXT_MODEL = "cc.ko.300.bin"
+
+# Sentence Transformer 모델
+SENTENCE_TRANSFORMER_MODEL = os.path.join(
+    BASE_DIR, "models", "paraphrase-multilingual-mpnet-base-v2"
+)
+
+
+# Log
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": [
+                "console",
+            ],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "apps": {
+            "handlers": [
+                "console",
+            ],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+    "root": {
+        "handlers": [
+            "console",
+        ],
+        "level": "WARNING",
+    },
+}

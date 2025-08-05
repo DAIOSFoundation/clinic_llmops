@@ -1,0 +1,88 @@
+# =================================================================
+# General / OS / Editor
+# =================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE & Editor specific
+.idea/
+.vscode/
+*.iml
+*.sublime-project
+*.sublime-workspace
+*.swp
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite3
+
+# =================================================================
+# Flutter (in /clinic_front directory)
+# =================================================================
+clinic_front/build/
+clinic_front/.dart_tool/
+clinic_front/.metadata
+clinic_front/.packages
+clinic_front/ios/Pods/
+clinic_front/ios/Podfile.lock
+clinic_front/ios/.symlinks/
+clinic_front/ios/Flutter/
+clinic_front/android/.gradle/
+clinic_front/android/local.properties
+clinic_front/android/app/build/
+clinic_front/android/build/
+clinic_front/.flutter-plugins
+clinic_front/.flutter-plugins-dependencies
+clinic_front/flutter_pid*.log
+
+# Generated files
+clinic_front/**/*.g.dart
+clinic_front/**/*.freezed.dart
+
+# Python virtual environment
+clinic_back/venv/
+clinic_back/env/
+clinic_back/.venv/
+clinic_back/uploads/
+
+# Python bytecode and cache
+clinic_back/**/__pycache__/
+clinic_back/**/*.pyc
+clinic_back/**/*.pyo
+clinic_back/**/*.pyd
+
+# Django local database
+clinic_back/db.sqlite3
+clinic_back/*.sqlite3
+
+# User-uploaded media files
+clinic_back/media/
+
+# Collected static files for deployment
+clinic_back/staticfiles/
+clinic_back/static_root/
+
+# Test coverage reports
+clinic_back/.coverage
+clinic_back/htmlcov/
+clinic_back/.pytest_cache/
+
+# Packaging
+clinic_back/dist/
+clinic_back/build/
+clinic_back/*.egg-info/
+
+# .env 파일은 커밋할 것이므로, 아래 라인을 주석 처리하거나 삭제합니다.
+# clinic_back/.env
+# clinic_back/*.env
+
+clinic_back/models/
+clinic_back/models/paraphrase-multilingual-mpnet-base-v2/

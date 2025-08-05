@@ -1,0 +1,31 @@
+# Django and REST Framework
+Django==5.2
+djangorestframework==3.16.0
+django-cors-headers==4.7.0
+
+# Database
+psycopg2-binary==2.9.10
+
+# Authentication
+PyJWT==2.10.1
+
+# Environment and Configuration
+python-dotenv==1.1.0
+
+# HTTP and API
+requests==2.32.3
+httpx==0.28.1
+
+# Google Cloud Storage (for file uploads)
+google-cloud-storage==3.1.0
+google-auth==2.40.3
+
+# RAG and AI (minimal)
+faiss-cpu==1.11.0
+sentence-transformers==4.1.0
+google-generativeai==0.8.5
+
+# Utilities
+numpy==2.3.1
+pandas==2.3.1
+Pillow==11.2.1

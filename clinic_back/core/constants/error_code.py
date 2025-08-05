@@ -1,0 +1,65 @@
+MISSING_BASIC_AUTH = "0000"
+INVALID_CREDENTIAL = "0002"
+INVALID_AUTH_FORMAT = "0003"
+
+# User
+USER_NOT_FOUND = "1001"
+USER_ALREADY_EXISTS = "1002"
+EMAIL_ALREADY_EXISTS = "1003"
+INVALID_REGISTER_FORMAT = "1004"
+
+
+# Project
+PROJECT_NOT_FOUND = "2001"
+
+# Dataset
+DATASET_NOT_FOUND = "3001"
+INVALID_DATASET_FORMAT = "3002"
+
+# Rag
+RAG_NOT_FOUND = "4001"
+RAG_FILE_NOT_FOUND = "4002"
+RAG_DB_NOT_FOUND = "4003"
+RAG_NEED_QUESTION = "4004"
+
+# Finetuning
+FINETUNING_NOT_FOUND = "5001"
+
+# llm
+GPU_NOT_FOUND = "6001"
+MODEL_NOT_FOUND = "6002"
+
+# db sync
+DB_SYNC_NOT_FOUND = "7001"
+
+# file sync
+FILE_SYNC_NOT_FOUND = "8001"
+
+# file sync
+CONTEXT_WORK_NOT_FOUND = "9001"
+CONTEXT_WORK_TOOL_NOT_FOUND = "9002"
+CONTEXT_WORK_QUERY_NOT_FOUND = "9003"
+CONTEXT_WORK_NOT_INIT_WORK_FLOW = "9004"
+CONTEXT_WORK_TOOL_NOT_FOUND = "9005"
+
+# common
+INTERNAL_SERVER_ERROR = "99998"
+UNKNOWN_ERROR = "99999"
+
+ERROR_MESSAGES = {
+    MISSING_BASIC_AUTH: "Authorization 헤더가 누락되었습니다.",
+    INVALID_CREDENTIAL: "이메일 또는 비밀번호가 올바르지 않습니다.",
+    USER_NOT_FOUND: "사용자를 찾을 수 없습니다.",
+    USER_ALREADY_EXISTS: "이미 존재하는 사용자입니다.",
+    INTERNAL_SERVER_ERROR: "서버에 문제가 발생했습니다.",
+    UNKNOWN_ERROR: "알 수 없는 오류가 발생했습니다.",
+    INVALID_AUTH_FORMAT: "Authorizatoin 포맷이 잘못되었습니다.",
+    DATASET_NOT_FOUND: "해당 데이터 셋이 존재 하지 없습니다.",
+    RAG_NOT_FOUND: "해당 RAG가 존재 하지 않습니다.",
+}
+
+SUCCESS_OK = "S0000"
+
+
+def get_error_message(code: str) -> str:
+    return ERROR_MESSAGES.get(code, ERROR_MESSAGES[UNKNOWN_ERROR])
