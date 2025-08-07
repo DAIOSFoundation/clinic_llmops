@@ -18,6 +18,8 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
   const SIMILARITY_THRESHOLD = 0.8; // 유사도 임계값
 
   // 1. 설정된 RAG API 목록 로드
+  addApiCallLog('Searching', '🔍 RAG 검색 시작...', 0, '문서 검색 준비 중');
+  
   const ragApis = loadRagApis();
   console.log('MainContent에서 로드된 RAG API:', ragApis);
   console.log('localStorage ragApis:', localStorage.getItem('ragApis'));
@@ -34,6 +36,8 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
   console.log('원본 질문:', question);
 
   // 2. 설정된 RAG API들 병렬 호출
+  addApiCallLog('Searching', '📚 문서 검색 중...', 0, '임베딩 모델 로딩 및 문서 분석');
+  
   const ragApiPromises = ragApis.map(async (api) => {
     try {
       let apiUrl = api.url;
@@ -94,13 +98,16 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
   const ragApiResults = await Promise.all(ragApiPromises);
   console.log('RAG API 호출 결과:', ragApiResults);
 
-  // 3. 최대 유사도 추출 함수
+  // 3. 결과 분석 시작
+  addApiCallLog('Searching', '🔍 결과 분석 중...', 0, '유사도 계산 및 카테고리 결정');
+
+  // 4. 최대 유사도 추출 함수
   const getMaxSimilarity = (data) => {
     if (!data?.data?.documents?.length) return 0;
     return Math.max(...data.data.documents.map(doc => doc.score || 0));
   };
 
-  // 4. 성공한 API 중에서 최고 유사도 찾기
+  // 5. 성공한 API 중에서 최고 유사도 찾기
   const successfulResults = ragApiResults.filter(result => result.success);
   let bestResult = null;
   let maxSimilarity = 0;
@@ -139,6 +146,8 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
   }
 
   // 7. 컨텍스트 추출 및 출처 로그 기록
+  addApiCallLog('Searching', '📄 컨텍스트 추출 중...', 0, '관련 문서 내용 정리');
+  
   if (ragData?.data?.documents?.length > 0) {
     ragContext = ragData.data.documents.map(doc => doc.page_content).join('\n\n---\n\n');
     addApiCallLog('Context', `📄 ${ragData.data.documents.length}개 문서 추출 완료`, 0, `총 ${ragContext.length}자`);
@@ -151,6 +160,9 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
   } else {
     addApiCallLog('Context', `⚠️ 관련 문서 없음`, 0, '컨텍스트 없음');
   }
+  
+  // 8. 검색 완료
+  addApiCallLog('Searching', '✅ RAG 검색 완료!', 0, '모든 단계 완료');
   
   return { category, ragContext };
 }
