@@ -1,486 +1,483 @@
-# NXDF LLMOPS - RAG 기반 문서 검색 및 질의응답 시스템
+# NXDF LLMOps - 종합 의료 관리 시스템
+
+NXDF LLMOps는 **RAG(Retrieval-Augmented Generation) 기반 문서 검색 및 질의응답 시스템**과 **AI 기반 병원 관리 데스크톱 애플리케이션**을 포함한 종합 의료 관리 시스템입니다.
 
 ## 📋 프로젝트 개요
 
-NXDF LLMOPS는 RAG(Retrieval-Augmented Generation) 기술을 활용한 문서 검색 및 질의응답 시스템입니다. 사용자가 문서를 업로드하고, AI 모델을 통해 문서 내용을 기반으로 한 질의응답을 제공합니다.
+이 프로젝트는 다음과 같은 세 가지 주요 컴포넌트로 구성됩니다:
 
-### 🎯 주요 기능
-
-- **사용자 인증**: JWT 기반 로그인/회원가입
-- **문서 업로드**: 다양한 형식의 문서 업로드 지원
-- **RAG 시스템**: FAISS 벡터 검색과 Sentence Transformers를 활용한 문서 검색
-- **질의응답**: 업로드된 문서를 기반으로 한 AI 질의응답
-- **웹 인터페이스**: Flutter 웹 기반의 현대적인 UI/UX
+1. **clinic_back** - Django 백엔드 API 서버 (RAG 시스템)
+2. **clinic_front** - Flutter 웹/모바일 프론트엔드
+3. **dation_clinic_app** - Electron 데스크톱 애플리케이션 (AI 병원 관리 시스템)
 
 ## 🏗️ 프로젝트 구조
 
 ```
 clinic_llmops/
-├── clinic_back/                 # Django 백엔드
+├── clinic_back/                 # Django 백엔드 (RAG 시스템)
 │   ├── apps/
-│   │   ├── user/               # 사용자 관리 앱
-│   │   │   ├── entities/       # 도메인 엔티티
-│   │   │   ├── models/         # Django 모델
-│   │   │   ├── repositories/   # 데이터 접근 계층
-│   │   │   ├── serializers/    # API 직렬화
-│   │   │   ├── services/       # 비즈니스 로직
-│   │   │   ├── views/          # API 뷰
-│   │   │   └── urls.py         # URL 라우팅
-│   │   └── rag/                # RAG 시스템 앱
-│   │       ├── entities/       # RAG 엔티티
-│   │       ├── infra/          # 인프라 (FAISS, FastText)
-│   │       ├── models/         # RAG 모델
-│   │       ├── repositories/   # RAG 데이터 접근
-│   │       ├── serializers/    # RAG API 직렬화
-│   │       ├── services/       # RAG 비즈니스 로직
-│   │       ├── views/          # RAG API 뷰
-│   │       └── urls.py         # RAG URL 라우팅
+│   │   ├── rag/                # RAG 관련 기능
+│   │   └── user/               # 사용자 관리
 │   ├── config/                 # Django 설정
-│   │   ├── settings.py         # 프로젝트 설정
-│   │   └── urls.py             # 메인 URL 설정
-│   ├── core/                   # 공통 기능
-│   │   ├── constants/          # 상수 정의
-│   │   ├── exceptions/         # 예외 처리
-│   │   ├── middleware/         # 미들웨어
-│   │   └── utils/              # 유틸리티
-│   ├── data/                   # 데이터 저장소
-│   │   └── rag/                # RAG 인덱스 파일
-│   ├── models/                 # AI 모델 저장소
-│   ├── requirements.txt        # Python 의존성
-│   └── manage.py               # Django 관리 명령
-│
-└── clinic_front/               # Flutter 프론트엔드
-    ├── lib/
-    │   ├── app/                # 앱 설정
-    │   │   ├── app.dart        # 메인 앱 위젯
-    │   │   ├── app_env.dart    # 환경 설정
-    │   │   └── app_router.dart # 라우팅 설정
-    │   ├── core/               # 공통 기능
-    │   │   ├── blocs/          # 인증 BLoC
-    │   │   └── entities/       # 공통 엔티티
-    │   ├── data/               # 데이터 계층
-    │   │   ├── mappers/        # 데이터 매핑
-    │   │   ├── models/         # API 모델
-    │   │   └── network/        # 네트워크 서비스
-    │   ├── features/           # 기능별 모듈
-    │   │   ├── home/           # 홈 화면
-    │   │   │   ├── presentation/ # UI 컴포넌트
-    │   │   │   └── rag/        # RAG 기능
-    │   │   │       ├── data/   # RAG 데이터 계층
-    │   │   │       ├── domain/ # RAG 도메인 계층
-    │   │   │       └── presentation/ # RAG UI
-    │   │   └── login/          # 로그인 기능
-    │   │       ├── data/       # 로그인 데이터 계층
-    │   │       ├── domain/     # 로그인 도메인 계층
-    │   │       ├── presentation/ # 로그인 UI
-    │   │       └── signup/     # 회원가입
-    │   ├── shared/             # 공유 컴포넌트
-    │   │   ├── constants/      # 상수
-    │   │   ├── exceptions/     # 예외 처리
-    │   │   ├── presentation/   # 공통 UI 위젯
-    │   │   ├── services/       # 공통 서비스
-    │   │   ├── theme/          # 테마 설정
-    │   │   └── utils/          # 유틸리티
-    │   ├── injection.dart      # 의존성 주입
-    │   └── main.dart           # 앱 진입점
-    ├── assets/                 # 정적 자산
-    │   ├── fonts/              # 폰트 파일
-    │   ├── icons/              # 아이콘 파일
-    │   └── images/             # 이미지 파일
-    ├── pubspec.yaml            # Flutter 의존성
-    └── web/                    # 웹 설정
-        ├── index.html          # HTML 템플릿
-        └── manifest.json       # PWA 매니페스트
+│   ├── core/                   # 핵심 유틸리티
+│   └── data/                   # 벡터 저장소 데이터
+├── clinic_front/               # Flutter 프론트엔드
+│   ├── lib/
+│   │   ├── features/           # 기능별 모듈
+│   │   ├── shared/             # 공통 컴포넌트
+│   │   └── app/                # 앱 설정
+│   └── web/                    # 웹 빌드
+└── dation_clinic_app/          # Electron 데스크톱 앱
+    ├── src/
+    │   ├── components/         # React 컴포넌트
+    │   ├── api/                # API 모듈
+    │   └── utils/              # 유틸리티
+    └── public/                 # 정적 파일
 ```
 
 ## 🛠️ 기술 스택
 
-### 백엔드 (Django)
-- **Framework**: Django 4.2.23, Django REST Framework 3.15.2
-- **Database**: SQLite (개발용), PostgreSQL (프로덕션용)
-- **Authentication**: JWT (JSON Web Tokens)
+### Backend (clinic_back)
+- **Framework**: Django 4.2.23
+- **API**: Django REST Framework 3.15.2
+- **Database**: SQLite (개발), PostgreSQL (운영)
+- **Authentication**: JWT
 - **AI/ML**: 
   - FAISS (벡터 검색)
   - Sentence Transformers (텍스트 임베딩)
   - FastText (텍스트 임베딩)
-- **File Storage**: Google Cloud Storage
-- **Document Processing**: LangChain
+  - LangChain (문서 처리)
+- **Storage**: Google Cloud Storage
 - **CORS**: django-cors-headers
 
-### 프론트엔드 (Flutter)
+### Frontend (clinic_front)
 - **Framework**: Flutter 3.32.8
 - **State Management**: Flutter Bloc 9.1.0
 - **Routing**: Go Router 16.0.0
 - **HTTP Client**: Dio 5.8.0
 - **Dependency Injection**: Get It 8.0.3
-- **Local Storage**: Shared Preferences 2.2.2
-- **File Handling**: File Picker 10.1.9, Desktop Drop 0.6.0
-- **Charts**: FL Chart 1.0.0
-- **Code Generation**: JSON Serializable 6.9.5, Build Runner 2.5.4
+- **Code Generation**: JSON Serializable, Build Runner
 
-## 🚀 설치 및 실행
+### Desktop App (dation_clinic_app)
+- **Framework**: React 18.2.0
+- **Desktop**: Electron 31.0.2
+- **Build Tool**: Vite 5.3.0
+- **AI**: Google Generative AI (@google/generative-ai)
+- **Markdown**: react-markdown + rehype-raw + remark-gfm
+- **Package**: electron-builder
 
-### 사전 요구사항
+## 🚀 빠른 시작 (테스트용)
 
-- **Python**: 3.8 이상
-- **Flutter**: 3.32.8 이상
-- **Node.js**: 18 이상 (Flutter 웹 개발용)
-- **Git**: 최신 버전
-
-### 1. 프로젝트 클론
+### 1. 백엔드 실행 (Django)
 
 ```bash
-git clone <repository-url>
-cd clinic_llmops
+# clinic_back 디렉토리로 이동
+cd clinic_back
+
+# 가상환경 활성화
+source venv/bin/activate
+
+# 서버 실행
+python manage.py runserver 0.0.0.0:8000
 ```
 
-### 2. 백엔드 설정
-
-#### 2.1 가상환경 생성 및 활성화
+### 2. 프론트엔드 실행 (Flutter)
 
 ```bash
+# clinic_front 디렉토리로 이동
+cd clinic_front
+
+# 의존성 설치
+flutter pub get
+
+# 웹 실행
+flutter run -d chrome --web-port=3000
+```
+
+### 3. 데스크톱 앱 실행 (Electron)
+
+```bash
+# dation_clinic_app 디렉토리로 이동
+cd dation_clinic_app
+
+# 의존성 설치
+npm install
+
+# 개발 모드 실행
+npm run electron:dev
+```
+
+### 4. 테스트 계정
+
+- **이메일**: `test@example.com`
+- **비밀번호**: `test1234`
+
+## 📚 상세 설치 및 실행 가이드
+
+### Backend 설치 (clinic_back)
+
+#### 1. Python 환경 설정
+```bash
 cd clinic_back
+
+# Python 3.8 이상 필요
+python --version
+
+# 가상환경 생성
 python -m venv venv
+
+# 가상환경 활성화
 source venv/bin/activate  # macOS/Linux
 # 또는
 venv\Scripts\activate     # Windows
 ```
 
-#### 2.2 의존성 설치
-
+#### 2. 의존성 설치
 ```bash
 pip install -r requirements.txt
 ```
 
-#### 2.3 데이터베이스 마이그레이션
-
+#### 3. 데이터베이스 설정
 ```bash
+# 마이그레이션 실행
 python manage.py makemigrations
 python manage.py migrate
+
+# 테스트 사용자 생성
+python manage.py shell
 ```
 
-#### 2.4 테스트 사용자 생성
+```python
+from apps.user.models import User
+from django.contrib.auth.hashers import make_password
 
-```bash
-python create_test_user.py
+# 테스트 사용자 생성
+user = User.objects.create(
+    email='test@example.com',
+    name='테스트 사용자',
+    password=make_password('test1234')
+)
+print(f"사용자 생성 완료: {user.email}")
+exit()
 ```
 
-#### 2.5 개발 서버 실행
-
+#### 4. 서버 실행
 ```bash
 python manage.py runserver 0.0.0.0:8000
 ```
 
-### 3. 프론트엔드 설정
+### Frontend 설치 (clinic_front)
 
-#### 3.1 의존성 설치
-
+#### 1. Flutter 환경 설정
 ```bash
-cd ../clinic_front
+cd clinic_front
+
+# Flutter 버전 확인
+flutter --version
+
+# 의존성 설치
 flutter pub get
 ```
 
-#### 3.2 코드 생성
-
+#### 2. 코드 생성
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+# JSON 직렬화 코드 생성
+dart run build_runner build
 ```
 
-#### 3.3 웹 서버 실행
-
+#### 3. 앱 실행
 ```bash
-flutter run -d chrome --web-port 3000
+# 웹 실행
+flutter run -d chrome --web-port=3000
+
+# 모바일 실행 (iOS)
+flutter run -d ios
+
+# 모바일 실행 (Android)
+flutter run -d android
 ```
 
-## 🧪 테스트
+### Desktop App 설치 (dation_clinic_app)
 
-### 백엔드 API 테스트
-
-#### 로그인 테스트
+#### 1. Node.js 환경 설정
 ```bash
-# Basic Auth를 사용한 로그인
-curl -X POST http://localhost:8000/api/v1/users/login \
-  -H "Authorization: Basic $(echo -n 'test@example.com:test1234' | base64)" \
-  -H "Content-Type: application/json"
+cd dation_clinic_app
+
+# Node.js 버전 확인
+node --version
+npm --version
 ```
 
-#### 회원가입 테스트
+#### 2. 의존성 설치
 ```bash
-curl -X POST http://localhost:8000/api/v1/users/register \
-  -H "Authorization: Basic $(echo -n 'newuser@example.com:newpassword123' | base64)" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "새 사용자",
-    "email": "newuser@example.com",
-    "password": "newpassword123"
-  }'
+npm install
 ```
 
-#### RAG API 테스트
+#### 3. 앱 실행
 ```bash
-# RAG 목록 조회 (인증 필요)
-curl -X GET http://localhost:8000/api/v1/rags \
-  -H "Authorization: Bearer <access_token>"
+# 개발 모드 (Vite React)
+npm run dev
+
+# Electron 개발 모드
+npm run electron:dev
+
+# 프로덕션 빌드
+npm run electron:build
 ```
 
-### 프론트엔드 테스트
-
-#### Flutter 테스트 실행
-```bash
-cd clinic_front
-flutter test
-```
-
-#### 웹 브라우저 테스트
-1. 브라우저에서 `http://localhost:3000` 접속
-2. 테스트 계정으로 로그인:
-   - 이메일: `test@example.com`
-   - 비밀번호: `test1234`
-3. RAG 기능 테스트
-
-## 📚 API 문서
+## 🔧 API 문서
 
 ### 인증 API
 
 #### 로그인
-- **URL**: `POST /api/v1/users/login`
-- **인증**: Basic Auth
-- **요청 예시**:
-```bash
-curl -X POST http://localhost:8000/api/v1/users/login \
-  -H "Authorization: Basic $(echo -n 'email:password' | base64)"
-```
+```http
+POST /api/v1/users/login
+Content-Type: application/json
 
-#### 회원가입
-- **URL**: `POST /api/v1/users/register`
-- **인증**: Basic Auth
-- **요청 본문**:
-```json
 {
-  "name": "사용자명",
-  "email": "user@example.com",
-  "password": "password123"
+  "email": "test@example.com",
+  "password": "test1234"
 }
 ```
 
-#### 토큰 갱신
-- **URL**: `POST /api/v1/users/refresh`
-- **인증**: Bearer Token (refresh_token)
+#### 응답
+```json
+{
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+  "user": {
+    "id": "uuid",
+    "name": "테스트 사용자",
+    "email": "test@example.com"
+  }
+}
+```
 
 ### RAG API
 
 #### RAG 목록 조회
-- **URL**: `GET /api/v1/rags`
-- **인증**: Bearer Token
-
-#### RAG 상세 조회
-- **URL**: `GET /api/v1/rags/{id}`
-- **인증**: Bearer Token
+```http
+GET /api/v1/rags
+Authorization: Bearer {access_token}
+```
 
 #### RAG 생성
-- **URL**: `POST /api/v1/rags`
-- **인증**: Bearer Token
-- **요청 본문**:
-```json
+```http
+POST /api/v1/rags
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
 {
   "name": "RAG 이름",
   "description": "RAG 설명",
-  "rag_file_ids": ["file_id_1", "file_id_2"]
+  "rag_file_ids": ["file-uuid-1", "file-uuid-2"]
 }
 ```
 
-#### RAG 수정
-- **URL**: `PATCH /api/v1/rags/{id}`
-- **인증**: Bearer Token
-
-#### RAG 삭제
-- **URL**: `DELETE /api/v1/rags/{id}`
-- **인증**: Bearer Token
-
 #### 파일 업로드
-- **URL**: `POST /api/v1/rags/file/upload`
-- **인증**: Bearer Token
-- **Content-Type**: `multipart/form-data`
+```http
+POST /api/v1/rags/file/upload
+Authorization: Bearer {access_token}
+Content-Type: multipart/form-data
 
-#### 벡터 검색
-- **URL**: `POST /api/v1/rags/retriever/{name}`
-- **인증**: Bearer Token
-- **요청 본문**:
-```json
+file: [파일]
+```
+
+#### RAG 검색
+```http
+POST /api/v1/rags/retriever/{rag_id}
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
 {
-  "query": "검색할 질문",
-  "k": 5
+  "query": "검색 질문"
 }
 ```
 
 ## 🏛️ 아키텍처
 
-### 백엔드 아키텍처 (Clean Architecture)
-
+### Backend Architecture (Clean Architecture)
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Presentation Layer                       │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
-│  │   API Views     │  │   Serializers   │  │  Middleware │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-┌─────────────────────────────────────────────────────────────┐
-│                     Domain Layer                            │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
-│  │    Entities     │  │    Services     │  │  Use Cases  │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-┌─────────────────────────────────────────────────────────────┐
-│                     Data Layer                              │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
-│  │  Repositories   │  │     Models      │  │  Infra      │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
-└─────────────────────────────────────────────────────────────┘
+Entity → Repository → Service → View
 ```
 
-### 프론트엔드 아키텍처 (Clean Architecture + BLoC)
+- **Entity**: 비즈니스 로직을 담은 도메인 객체
+- **Repository**: 데이터 접근 계층
+- **Service**: 비즈니스 로직 처리
+- **View**: API 엔드포인트
 
+### Frontend Architecture (Clean Architecture + BLoC)
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                  Presentation Layer                         │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
-│  │     Screens     │  │     Widgets     │  │    BLoCs    │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-┌─────────────────────────────────────────────────────────────┐
-│                     Domain Layer                            │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
-│  │    Entities     │  │   Use Cases     │  │ Repositories│ │
-│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-┌─────────────────────────────────────────────────────────────┐
-│                     Data Layer                              │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
-│  │   Data Sources  │  │     Models      │  │   Mappers   │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
-└─────────────────────────────────────────────────────────────┘
+Presentation → Domain → Data
 ```
 
-## 🔧 개발 환경 설정
+- **Presentation**: UI 컴포넌트 및 BLoC
+- **Domain**: 비즈니스 로직 및 엔티티
+- **Data**: 데이터 소스 및 모델
 
-### 환경 변수 설정
-
-#### 백엔드 (.env)
-```env
-SECRET_KEY=your-secret-key
-REDIS_URL=redis://localhost:6379
-GOOGLE_CLOUD_STORAGE_BUCKET=your-bucket-name
-GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account.json
+### Desktop App Architecture (React + Electron)
+```
+React Components → API Layer → Electron Main Process
 ```
 
-#### 프론트엔드 (app_env.dart)
-```dart
-static const _baseURLs = {
-  AppEnvironment.DEV: 'http://localhost:8000',
-  AppEnvironment.PROD: 'https://your-api-domain.com',
-};
-```
+- **React Components**: UI 렌더링
+- **API Layer**: Google AI 및 Mock API 연동
+- **Electron Main Process**: 데스크톱 앱 관리
 
-### 데이터베이스 설정
+## 🔍 주요 기능
 
-#### 개발용 (SQLite)
-```python
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-    }
-}
-```
+### 1. RAG 시스템 (clinic_back + clinic_front)
+- **문서 업로드**: PDF, DOCX 등 다양한 형식 지원
+- **벡터 검색**: FAISS를 이용한 고속 유사도 검색
+- **질의응답**: 업로드된 문서 기반 AI 응답
+- **API 제공**: RESTful API를 통한 외부 연동
 
-#### 프로덕션용 (PostgreSQL)
-```python
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "your_db_name",
-        "USER": "your_db_user",
-        "PASSWORD": "your_db_password",
-        "HOST": "your_db_host",
-        "PORT": "5432",
-    }
-}
-```
+### 2. 병원 관리 시스템 (dation_clinic_app)
+- **AI 챗봇**: Google Gemini AI 기반 대화형 인터페이스
+- **환자 관리**: EMR 데이터 관리
+- **예약 시스템**: 환자 예약 관리
+- **수술 기록**: 수술 관련 데이터 관리
+- **CRM 시스템**: 고객 관계 관리
+- **설문조사**: 환자 만족도 조사
+
+### 3. 통합 기능
+- **멀티 플랫폼**: 웹, 모바일, 데스크톱 지원
+- **실시간 로그**: API 호출 상태 모니터링
+- **세션 관리**: 대화 세션 저장/불러오기
+- **데이터 동기화**: 클라우드 기반 데이터 관리
 
 ## 🚀 배포
 
-### 백엔드 배포 (Docker)
+### Backend 배포
+```bash
+# 프로덕션 설정
+export DJANGO_SETTINGS_MODULE=config.settings_prod
 
-```dockerfile
-FROM python:3.8-slim
+# 데이터베이스 마이그레이션
+python manage.py migrate
 
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# 정적 파일 수집
+python manage.py collectstatic
 
-COPY . .
-RUN python manage.py collectstatic --noinput
-RUN python manage.py migrate
-
-EXPOSE 8000
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
+# Gunicorn 실행
+gunicorn config.wsgi:application --bind 0.0.0.0:8000
 ```
 
-### 프론트엔드 배포
-
+### Frontend 배포
 ```bash
 # 웹 빌드
 flutter build web
 
-# Firebase Hosting 배포
-firebase deploy
+# 배포 디렉토리: build/web/
+```
+
+### Desktop App 배포
+```bash
+# 프로덕션 빌드
+npm run electron:build
+
+# 배포 파일: release/ 디렉토리
 ```
 
 ## 🐛 문제 해결
 
 ### 일반적인 문제들
 
-#### 1. 의존성 충돌
+#### 1. Python 가상환경 문제
 ```bash
-# 백엔드
-pip install --upgrade pip
-pip install -r requirements.txt --force-reinstall
+# 가상환경 재생성
+rm -rf venv
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
-# 프론트엔드
+#### 2. Flutter 의존성 문제
+```bash
+# 캐시 정리
 flutter clean
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-#### 2. 데이터베이스 마이그레이션 오류
+#### 3. Node.js 의존성 문제
 ```bash
-python manage.py makemigrations --empty app_name
-python manage.py makemigrations
-python manage.py migrate
+# node_modules 재설치
+rm -rf node_modules package-lock.json
+npm install
 ```
 
-#### 3. 포트 충돌
+#### 4. 포트 충돌
 ```bash
-# 포트 사용 확인
-lsof -i :8000
-lsof -i :3000
-
-# 프로세스 종료
-kill -9 <PID>
+# 사용 중인 포트 확인
+lsof -i :8000  # 백엔드
+lsof -i :3000  # 프론트엔드
 ```
 
-#### 4. Flutter 웹 캐시 문제
+### 로그 확인
+
+#### Backend 로그
 ```bash
-flutter clean
-flutter pub get
-flutter run -d chrome --web-port 3000
+# Django 로그 확인
+tail -f clinic_back/django.log
+
+# 서버 로그 확인
+python manage.py runserver 0.0.0.0:8000 --verbosity=2
 ```
 
-## 📝 라이선스
+#### Frontend 로그
+```bash
+# Flutter 로그 확인
+flutter logs
+
+# 웹 브라우저 개발자 도구
+# Console 탭에서 에러 확인
+```
+
+## 📝 개발 가이드
+
+### 코드 스타일
+
+#### Python (Backend)
+- PEP 8 준수
+- Type hints 사용
+- Docstring 작성
+
+#### Dart (Frontend)
+- Effective Dart 가이드라인 준수
+- BLoC 패턴 사용
+- Clean Architecture 적용
+
+#### JavaScript/React (Desktop App)
+- ESLint 규칙 준수
+- React Hooks 사용
+- 컴포넌트 분리
+
+### 테스트
+
+#### Backend 테스트
+```bash
+# 단위 테스트
+python manage.py test
+
+# 특정 앱 테스트
+python manage.py test apps.rag
+```
+
+#### Frontend 테스트
+```bash
+# 단위 테스트
+flutter test
+
+# 위젯 테스트
+flutter test test/widget_test.dart
+```
+
+## 📄 라이선스
 
 이 프로젝트는 MIT 라이선스 하에 배포됩니다.
 
-## 🤝 기여하기
+## 🤝 기여
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -488,10 +485,10 @@ flutter run -d chrome --web-port 3000
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📞 문의
+## 📞 지원
 
-프로젝트에 대한 문의사항이 있으시면 이슈를 생성해주세요.
+문제가 발생하거나 질문이 있으시면 이슈를 생성해 주세요.
 
 ---
 
-**NXDF LLMOPS** - RAG 기반 문서 검색 및 질의응답 시스템 
+**NXDF LLMOps** - 의료 업무 자동화와 AI 기반 의사결정 지원을 위한 종합적인 의료 관리 시스템 

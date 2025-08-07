@@ -40,6 +40,15 @@ class RagEdited extends RagState {
   List<Object?> get props => [rag, uploadedFiles];
 }
 
+class RagDeleted extends RagState {
+  final String deletedId;
+
+  const RagDeleted({required this.deletedId, super.uploadedFiles});
+
+  @override
+  List<Object?> get props => [deletedId, uploadedFiles];
+}
+
 class RagsLoaded extends RagState {
   final List<RagSummaryEntity>? rags;
 

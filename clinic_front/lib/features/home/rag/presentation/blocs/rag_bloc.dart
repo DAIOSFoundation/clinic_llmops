@@ -205,14 +205,20 @@ class RagBloc extends Bloc<RagEvent, RagState> {
     emit(RagLoading(uploadedFiles: state.uploadedFiles));
     try {
       await deleteRagUsecase(event.id);
+      
+      // 삭제 성공 후 즉시 목록에서 제거
       if (state is RagsLoaded) {
         final prevList = (state as RagsLoaded).rags ?? [];
         final updatedList = prevList.where((e) => e.id != event.id).toList();
         emit(RagsLoaded(rags: updatedList, uploadedFiles: state.uploadedFiles));
       } else {
+        // 현재 상태가 RagsLoaded가 아닌 경우 전체 목록 새로고침
         final result = await fetchRagsUsecase();
         emit(RagsLoaded(rags: result, uploadedFiles: state.uploadedFiles));
       }
+      
+      // 삭제 완료 상태 추가
+      emit(RagDeleted(deletedId: event.id, uploadedFiles: state.uploadedFiles));
     } catch (e) {
       emit(RagError(e.toString(), uploadedFiles: state.uploadedFiles));
     }

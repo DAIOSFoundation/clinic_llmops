@@ -74,7 +74,14 @@ class _RAGDetailScreenState extends State<RAGDetailScreen>
       child: BlocConsumer<RagBloc, RagState>(
         listener: (context, state) {
           if (state is RagsLoaded) {
-            context.pop(true);
+            // 삭제된 RAG ID를 목록 화면으로 전달
+            context.pop({'deletedRagId': id});
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('RAG가 삭제되었습니다.')));
+          } else if (state is RagDeleted) {
+            // 삭제 완료 후 화면 닫기
+            context.pop({'deletedRagId': state.deletedId});
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(const SnackBar(content: Text('RAG가 삭제되었습니다.')));

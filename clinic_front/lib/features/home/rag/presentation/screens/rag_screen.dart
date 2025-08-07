@@ -28,6 +28,7 @@ class RagScreen extends StatefulWidget {
 class _RagState extends State<RagScreen> with RouteAware {
   @override
   void didPopNext() {
+    // 화면으로 돌아올 때마다 목록 새로고침
     context.read<RagBloc>().add(FetchRags());
   }
 

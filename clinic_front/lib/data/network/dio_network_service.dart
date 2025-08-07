@@ -26,7 +26,7 @@ class DioNetworkService extends NetworkService {
     baseUrl: AppEnv.baseURL,
     headers: headers,
     connectTimeout: const Duration(seconds: 20),
-    receiveTimeout: const Duration(seconds: 20),
+    receiveTimeout: const Duration(hours: 1), // 1시간으로 변경
   );
 
   @override
