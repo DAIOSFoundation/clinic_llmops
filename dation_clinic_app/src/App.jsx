@@ -125,6 +125,8 @@ function App() {
           displayTime = 6000; // LLM 로그는 6초
         } else if (type === 'API') {
           displayTime = 4000; // API 로그는 4초
+        } else if (type === 'Result') {
+          displayTime = 8000; // Result 로그는 8초 (총 소요시간 표시)
         }
         
         setTimeout(() => {

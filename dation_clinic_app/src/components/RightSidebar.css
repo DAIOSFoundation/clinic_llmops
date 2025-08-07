@@ -255,6 +255,24 @@
   40% { opacity: 1; }
 }
 
+/* Result type (새로 추가) */
+.api-call-log-item.result {
+  background-color: #e8f5e8; /* Light green background */
+  border: 1px solid #4caf50; /* Green border */
+  color: #2e7d32; /* Dark green text */
+}
+
+.api-call-log-item.result .log-arrow,
+.api-call-log-item.result .log-timestamp,
+.api-call-log-item.result .log-type {
+  color: #2e7d32; /* Apply text color to specific elements */
+}
+
+.api-call-log-item.result .result-info {
+  font-weight: bold;
+  color: #1b5e20; /* Darker green for emphasis */
+}
+
 /* Backend type (새로 추가) */
 .api-call-log-item.backend {
   background-color: #f0f8ff; /* Light blue background */

@@ -135,6 +135,9 @@ function RightSidebar({ isOpen, toggleSidebar, apiCallLogs, selectedMenu, lastLl
                     {log.type === 'Assembling' && !log.message.includes('완료') && (
                       <span className="assembling-dots"></span>
                     )}
+                    {log.type === 'Result' && (
+                      <span className="result-info">⏱️ {log.sourceInfo}</span>
+                    )}
                   </span>
                 )}
               </li>

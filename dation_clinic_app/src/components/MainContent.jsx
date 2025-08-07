@@ -255,6 +255,9 @@ function MainContent({ chatHistory, setChatHistory, currentPromptInput, setCurre
   const handleSendMessage = async () => {
     if (currentPromptInput.trim() === '' && !pastedImage || isLoading) return;
 
+    // 호출 시작 시간 기록
+    const startTime = Date.now();
+
     // 새 질의 시 기존 'Source' 타입 로그 초기화
     clearSourceLogs();
     setLastLlmOutput(''); // NEW: 새 질의 시작 시 이전 LLM 출력 초기화
@@ -304,8 +307,14 @@ function MainContent({ chatHistory, setChatHistory, currentPromptInput, setCurre
       // LLM 응답 완료
       addApiCallLog('LLM', '✅ LLM 응답 생성 완료!', 0, `총 ${geminiResponse.text.length}자 응답`);
       
+      // 총 소요 시간 계산
+      const totalTime = ((Date.now() - startTime) / 1000).toFixed(2);
+      
       // 응답 조립 완료 로그 (실제 응답이 화면에 표시된 후)
-      addApiCallLog('Assembling', '✅ 응답 조립 완료!', 0, '최종 응답 화면 표시 완료');
+      addApiCallLog('Assembling', '✅ 응답 조립 완료!', 0, `최종 응답 화면 표시 완료 (총 소요시간: ${totalTime}초)`);
+      
+      // 총 소요 시간 로그 추가
+      addApiCallLog('Result', `⏱️ 전체 처리 완료 - 총 소요시간: ${totalTime}초`, 0, '호출부터 응답 완료까지');
       
       // LLM 카드는 응답 완료 시 사라지도록 상태 변경 (이제 App.jsx에서 자동 처리되므로 제거)
       // updateApiCallLog(llmLogId, 'fading-out', 'LLM이 응답을 생성했습니다.'); 
@@ -320,10 +329,16 @@ function MainContent({ chatHistory, setChatHistory, currentPromptInput, setCurre
       // LLM 응답 생성 실패
       addApiCallLog('LLM', '❌ LLM 응답 생성 실패', 0, `오류: ${error.message}`);
       
+      // 총 소요 시간 계산 (에러 발생 시)
+      const totalTime = ((Date.now() - startTime) / 1000).toFixed(2);
+      
       setChatHistory((prev) => [...prev, { role: 'model', text: '죄송합니다. 메시지를 처리하는 데 문제가 발생했습니다. 다시 시도해 주세요.' }]);
       
       // 응답 조립 완료 로그 (에러 발생 시에도)
-      addApiCallLog('Assembling', '✅ 응답 조립 완료!', 0, '에러 응답 화면 표시 완료');
+      addApiCallLog('Assembling', '✅ 응답 조립 완료!', 0, `에러 응답 화면 표시 완료 (총 소요시간: ${totalTime}초)`);
+      
+      // 총 소요 시간 로그 추가 (에러 발생 시)
+      addApiCallLog('Result', `⏱️ 전체 처리 완료 - 총 소요시간: ${totalTime}초`, 0, '에러 발생으로 인한 처리 완료');
       
       // LLM 카드는 에러 발생 시에도 사라지도록 상태 변경 (이제 App.jsx에서 자동 처리되므로 제거)
       // updateApiCallLog(llmLogId, 'fading-out', 'LLM 응답 생성 실패'); 
