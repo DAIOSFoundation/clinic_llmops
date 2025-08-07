@@ -271,9 +271,9 @@ def llm_similarity_search(query: str, docs: List, top_k: int = 5, model_name: st
                 try:
                     success = future.result()
                     if success:
-                        # 진행률 로그는 10% 단위로만 표시
-                        if completed_count % max(1, len(filtered_docs) // 10) == 0 or completed_count == len(filtered_docs):
-                            logger.info(f"LLM 진행률: {completed_count}/{len(filtered_docs)} ({completed_count/len(filtered_docs)*100:.1f}%)")
+                                # 진행률 로그는 25% 단위로만 표시 (로그 빈도 감소)
+        if completed_count % max(1, len(filtered_docs) // 4) == 0 or completed_count == len(filtered_docs):
+            logger.info(f"LLM 진행률: {completed_count}/{len(filtered_docs)} ({completed_count/len(filtered_docs)*100:.1f}%)")
                 except Exception as e:
                     logger.error(f"문서 {doc_index+1} 처리 중 예외 발생: {e}")
 

@@ -102,8 +102,21 @@ function App() {
 
       const updatedLogs = [...prevLogs, newLog];
 
-      // 'Source' 타입이 아닌 모든 로그는 3초 후 사라지도록 처리 (LLM 포함)
-      if (type !== 'Source') { // MODIFIED: LLM 타입에 대한 예외 조건 제거
+      // 로그 타입별로 다른 표시 시간 설정
+      let displayTime = 3000; // 기본 3초
+      
+      if (type === 'Backend') {
+        displayTime = 8000; // 백엔드 로그는 8초 (검색 과정이 오래 걸리므로)
+      } else if (type === 'Searching') {
+        displayTime = 5000; // 검색 로그는 5초
+      } else if (type === 'LLM') {
+        displayTime = 6000; // LLM 로그는 6초
+      } else if (type === 'API') {
+        displayTime = 4000; // API 로그는 4초
+      }
+      
+      // 'Source' 타입이 아닌 모든 로그는 설정된 시간 후 사라지도록 처리
+      if (type !== 'Source') {
         setTimeout(() => {
           setApiCallLogs(currentLogs =>
             currentLogs.map(log =>
@@ -115,7 +128,7 @@ function App() {
               finalLogs.filter(log => log.id !== newLogId)
             );
           }, 500); // CSS transition duration (0.5s)
-        }, 3000); // 3초 지연 후 fade-out 시작
+        }, displayTime);
       }
 
       return updatedLogs;
