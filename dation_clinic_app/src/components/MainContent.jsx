@@ -87,9 +87,6 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
       
       addApiCallLog('RAG', `✅ ${api.name} API 호출 성공`, 0, `카테고리: ${api.category}`);
       
-      // 응답 조립 시작 로그
-      addApiCallLog('Assembling', '🔧 응답 조립 중...', 0, '데이터 처리 및 응답 생성');
-      
       return { api, data, success: true };
     } catch (error) {
       console.error(`RAG API 호출 실패 (${api.name}):`, error);
@@ -100,6 +97,9 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
 
   const ragApiResults = await Promise.all(ragApiPromises);
   console.log('RAG API 호출 결과:', ragApiResults);
+
+  // 응답 조립 시작 로그
+  addApiCallLog('Assembling', '🔧 응답 조립 중...', 0, '데이터 처리 및 응답 생성');
 
   // 3. 결과 분석 및 카테고리 결정
 
