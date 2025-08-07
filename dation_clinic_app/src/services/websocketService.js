@@ -16,6 +16,7 @@ class WebSocketService {
                 ? 'ws://localhost:8000/ws/logs/'
                 : 'wss://your-production-domain.com/ws/logs/';
             
+            console.log('WebSocket 연결 시도:', wsUrl);
             this.ws = new WebSocket(wsUrl);
             
             this.ws.onopen = () => {

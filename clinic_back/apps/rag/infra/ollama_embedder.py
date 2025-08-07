@@ -129,8 +129,17 @@ def keyword_filter_documents(query: str, docs: List, max_candidates: int = 50) -
     try:
         logger.info(f"키워드 필터링 시작 - 쿼리: {query}")
         
-        # 쿼리에서 키워드 추출 (간단한 토큰화)
-        query_keywords = set(query.lower().split())
+        # 쿼리에서 키워드 추출 (더 정교한 토큰화)
+        import re
+        
+        # 특수문자 제거 및 토큰화
+        clean_query = re.sub(r'[^\w\s]', '', query.lower())
+        query_keywords = set(clean_query.split())
+        
+        # 의미있는 키워드만 필터링 (1글자 단어 제외)
+        query_keywords = {kw for kw in query_keywords if len(kw) > 1}
+        
+        logger.info(f"추출된 쿼리 키워드: {query_keywords}")
         
         # 문서별 키워드 매칭 점수 계산
         doc_scores = []
@@ -145,9 +154,13 @@ def keyword_filter_documents(query: str, docs: List, max_candidates: int = 50) -
                 doc_text = str(doc)
             
             # 문서 텍스트를 소문자로 변환하고 키워드 추출
-            doc_keywords = set(doc_text.lower().split())
+            clean_doc_text = re.sub(r'[^\w\s]', '', doc_text.lower())
+            doc_keywords = set(clean_doc_text.split())
             
-            # 키워드 매칭 점수 계산 (Jaccard 유사도)
+            # 의미있는 키워드만 필터링 (1글자 단어 제외)
+            doc_keywords = {kw for kw in doc_keywords if len(kw) > 1}
+            
+            # 키워드 매칭 점수 계산
             intersection = len(query_keywords.intersection(doc_keywords))
             union = len(query_keywords.union(doc_keywords))
             
@@ -156,11 +169,20 @@ def keyword_filter_documents(query: str, docs: List, max_candidates: int = 50) -
             else:
                 jaccard_score = 0.0
             
-            # 키워드 포함 개수
+            # 키워드 포함 개수 및 비율
             keyword_count = intersection
+            keyword_ratio = keyword_count / len(query_keywords) if query_keywords else 0.0
             
             # 종합 점수 (키워드 매칭 + 포함 개수)
-            total_score = jaccard_score * 0.7 + (keyword_count / len(query_keywords)) * 0.3
+            total_score = jaccard_score * 0.6 + keyword_ratio * 0.4
+            
+            # 키워드가 하나도 매칭되지 않으면 매우 낮은 점수
+            if keyword_count == 0:
+                total_score = 0.01
+            
+            # 상위 5개 문서의 점수만 로깅 (성능 고려)
+            if len(doc_scores) < 5:
+                logger.info(f"문서 {i+1} 키워드 점수: Jaccard={jaccard_score:.3f}, 키워드수={keyword_count}, 총점={total_score:.3f}")
             
             doc_scores.append((total_score, i, doc))
         
