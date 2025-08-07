@@ -326,9 +326,7 @@ function MainContent({ chatHistory, setChatHistory, currentPromptInput, setCurre
 
   // 제거할 프롬프트 목록
   const promptsToRemove = [
-    '식당 예약',
-    '생산 장비 제어',
-    'MES/PLM 조회 가이드'
+    '식당 예약'
   ];
   
   // 제거할 프롬프트들을 필터링하고, '톡스앤필 상담' 프롬프트를 추가

@@ -251,24 +251,7 @@ function App() {
     },
 
 
-    {
-      id: 'mes-plm-guide',
-      title: 'MES/PLM 조회 가이드',
-      description: 'MES/PLM 시스템의 데이터를 조회하고 관련 대시보드를 확인하는 방법을 안내합니다.',
-      example: '모니터링 대시보드 띄워\n생산 현황 보여줘',
-      category: 'Interaction',
-      author: 'System',
-      date: getRandomDate(),
-    },
-    {
-      id: 'equipment-control',
-      title: '생산 장비 제어',
-      description: '생산 장비의 파라미터를 조작하는 자연어 명령어 프롬프트입니다.',
-      example: '압출기 1의 3구간 온도를 280도로 설정합니다. 이유는 공정 안정화입니다.\n화학 반응기 2 교반기 속도를 150으로 변경해주세요.\n연신 라인 1 장력 목표값 1500으로 맞춰줘.\n건조 오븐 1의 팬 속도를 1200 RPM으로 올려.',
-      category: 'Interaction',
-      author: 'System',
-      date: getRandomDate(),
-    }
+
   ]), []);
 
   // console.log('App: About to render JSX structure.'); // Debug: JSX 렌더링 직전 확인
