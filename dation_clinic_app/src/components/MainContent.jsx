@@ -149,10 +149,29 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
   addApiCallLog('Searching', '📄 컨텍스트 추출 중...', 0, '관련 문서 내용 정리');
   
   if (ragData?.data?.documents?.length > 0) {
-    ragContext = ragData.data.documents.map(doc => doc.page_content).join('\n\n---\n\n');
-    addApiCallLog('Context', `📄 ${ragData.data.documents.length}개 문서 추출 완료`, 0, `총 ${ragContext.length}자`);
+    // 컨텍스트 최적화: 각 문서의 내용을 요약하고 길이 제한
+    const optimizedDocs = ragData.data.documents.map(doc => {
+      let content = doc.page_content;
+      
+      // 문서 내용이 너무 길면 잘라내기 (각 문서당 최대 500자)
+      if (content.length > 500) {
+        content = content.substring(0, 500) + '...';
+      }
+      
+      // 줄바꿈을 공백으로 변환하여 가독성 개선
+      content = content.replace(/\n+/g, ' ').trim();
+      
+      return content;
+    });
     
-    ragData.data.documents.forEach((doc, index) => {
+    // 상위 3개 문서만 사용 (유사도가 높은 문서들)
+    const topDocs = optimizedDocs.slice(0, 3);
+    ragContext = topDocs.join('\n\n---\n\n');
+    
+    addApiCallLog('Context', `📄 ${topDocs.length}개 문서 추출 완료`, 0, `총 ${ragContext.length}자 (최적화됨)`);
+    
+    // 상위 3개 문서만 Source 로그에 표시
+    ragData.data.documents.slice(0, 3).forEach((doc, index) => {
       if (doc.metadata?.source) {
         addApiCallLog('Source', `📎 문서 ${index + 1}`, doc.score, `출처: ${doc.metadata.source}`, doc.page_content, doc.metadata.file_url);
       }

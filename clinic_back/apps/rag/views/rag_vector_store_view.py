@@ -90,7 +90,7 @@ class RagVectorStoreAPIView(APIView):
             logger.info(f"Ollama 가용성 확인 완료")
 
             logger.info(f"LLM 유사도 검색 시작...")
-            results = llm_similarity_search(query=question, docs=all_docs, top_k=5)
+            results = llm_similarity_search(query=question, docs=all_docs, top_k=3)
             logger.info(f"LLM 유사도 검색 완료")
 
             logger.info(f"결과 직렬화 시작...")
