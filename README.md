@@ -62,8 +62,10 @@ clinic_llmops/
   - Sentence Transformers (텍스트 임베딩)
   - Ollama (로컬 LLM - Gemma2:2b)
   - LangChain (문서 처리)
+  - **KoNLPy** (한국어 형태소 분석)
 - **Storage**: Google Cloud Storage
 - **CORS**: django-cors-headers
+- **WebSocket**: Django Channels (실시간 로그 전송)
 
 ### Frontend (clinic_front)
 - **Framework**: Flutter 3.32.8
@@ -80,6 +82,7 @@ clinic_llmops/
 - **AI**: Ollama Gemma3:27b (로컬 LLM)
 - **Markdown**: react-markdown + rehype-raw + remark-gfm
 - **Package**: electron-builder
+- **WebSocket**: 실시간 백엔드 로그 동기화
 
 ## 🚀 빠른 시작 (테스트용)
 
@@ -160,7 +163,10 @@ brew install ollama
 # Linux
 curl -fsSL https://ollama.ai/install.sh | sh
 
-# Gemma3:27b 모델 다운로드
+# Gemma2:2b 모델 다운로드 (백엔드용)
+ollama pull gemma2:2b
+
+# Gemma3:27b 모델 다운로드 (데스크톱 앱용)
 ollama pull gemma3:27b
 ```
 
@@ -190,6 +196,10 @@ exit()
 
 #### 5. 서버 실행
 ```bash
+# WebSocket 지원을 위한 ASGI 서버 실행
+daphne -b 0.0.0.0 -p 8000 config.asgi:application
+
+# 또는 일반 Django 서버 (WebSocket 미지원)
 python manage.py runserver 0.0.0.0:8000
 ```
 
@@ -368,26 +378,31 @@ React Components → API Layer → Electron Main Process
 - **문서 업로드**: PDF, DOCX 등 다양한 형식 지원
 - **벡터 검색**: FAISS를 이용한 고속 유사도 검색
 - **하이브리드 검색**: 키워드 매칭 + LLM 유사도 검색
+- **한국어 형태소 분석**: KoNLPy를 이용한 조사 제거 및 어간 추출
 - **Ollama 연동**: 로컬 Gemma2:2b 모델을 이용한 유사도 계산
 - **질의응답**: 업로드된 문서 기반 AI 응답
 - **문서 정보**: 문서 개수 및 크기 정보 표시
+- **실시간 로그**: WebSocket을 통한 백엔드 로그 전송
 - **API 제공**: RESTful API를 통한 외부 연동
 
 ### 2. Tox&Feel AI 병원 관리 시스템 (dation_clinic_app)
-- **AI 챗봇**: Banya Gemma 27b Tuned 모델 기반 대화형 인터페이스 (톡스앤필 스태프 역할)
+- **AI 챗봇**: Ollama Gemma3:27b 모델 기반 대화형 인터페이스 (톡스앤필 스태프 역할)
 - **RAG API 설정**: 다중 RAG API 관리 및 설정
 - **환자 관리**: EMR 데이터 관리
 - **예약 시스템**: 환자 예약 관리
 - **수술 기록**: 수술 관련 데이터 관리
 - **CRM 시스템**: 고객 관계 관리
 - **설문조사**: 환자 만족도 조사
-- **실시간 로그**: API 호출 상태 모니터링
+- **실시간 로그**: WebSocket을 통한 백엔드 로그 동기화
+- **Action Status**: API 호출 진행상황 실시간 모니터링
+- **Assembling 애니메이션**: 응답 조립 과정 시각적 표시
 
 ### 3. 통합 기능
 - **멀티 플랫폼**: 웹, 모바일, 데스크톱 지원
-- **실시간 로그**: API 호출 상태 모니터링
+- **실시간 로그**: WebSocket을 통한 백엔드-프론트엔드 로그 동기화
 - **세션 관리**: 대화 세션 저장/불러오기
 - **데이터 동기화**: 클라우드 기반 데이터 관리
+- **한국어 최적화**: 형태소 분석을 통한 정확한 키워드 매칭
 
 ## 🚀 배포
 
@@ -536,6 +551,14 @@ flutter test test/widget_test.dart
 ```
 
 ## 🔄 최근 업데이트
+
+### v2.1.0 (2024-8-7)
+- **한국어 형태소 분석 추가**: KoNLPy를 이용한 조사 제거 및 어간 추출
+- **WebSocket 실시간 로그 시스템**: Django Channels를 통한 백엔드-프론트엔드 로그 동기화
+- **Action Status 개선**: API 호출 진행상황 실시간 모니터링
+- **Assembling 애니메이션**: 응답 조립 과정 시각적 표시
+- **로그 최적화**: 유사도 평가 로그 간소화 및 사용자 경험 개선
+- **한국어 키워드 매칭 개선**: "하이코란"과 "하이코가 뭐야"에서 "하이코" 공통 키워드 인식
 
 ### v2.0.0 (2024-8-7)
 - **제조용 BOM/SOP 로직 완전 제거**: 모든 관련 컨텐츠와 로직 삭제
