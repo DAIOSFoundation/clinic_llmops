@@ -268,6 +268,62 @@
   color: #2f4f4f; /* Apply text color to specific elements */
 }
 
+/* Assembling type (새로 추가) */
+.api-call-log-item.assembling {
+  background-color: #fff8e1; /* Light yellow background */
+  border: 1px solid #ffb74d; /* Orange border */
+  color: #e65100; /* Dark orange text */
+  position: relative;
+  overflow: hidden;
+}
+
+.api-call-log-item.assembling .log-arrow,
+.api-call-log-item.assembling .log-timestamp,
+.api-call-log-item.assembling .log-type {
+  color: #e65100; /* Apply text color to specific elements */
+}
+
+/* Assembling 애니메이션 */
+.api-call-log-item.assembling::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: assembling-shimmer 1.5s infinite;
+}
+
+@keyframes assembling-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Assembling 로딩 점 애니메이션 */
+.api-call-log-item.assembling .assembling-dots {
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 1em;
+  line-height: 1;
+}
+
+.assembling-dots::after {
+  content: '';
+  animation: assembling-dot-blink 1.4s infinite;
+}
+
+@keyframes assembling-dot-blink {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
+}
+
 /* NEW: Source 타입의 log-header 내부 요소 조정 */
 .api-call-log-item.source .log-header { 
   display: flex; /* 헤더 다시 보이게 */

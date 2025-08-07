@@ -113,6 +113,8 @@ function App() {
         displayTime = 6000; // LLM 로그는 6초
       } else if (type === 'API') {
         displayTime = 4000; // API 로그는 4초
+      } else if (type === 'Assembling') {
+        displayTime = 10000; // Assembling 로그는 10초 (응답 조립 과정)
       }
       
       // 'Source' 타입이 아닌 모든 로그는 설정된 시간 후 사라지도록 처리
