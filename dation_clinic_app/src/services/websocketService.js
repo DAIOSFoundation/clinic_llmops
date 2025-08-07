@@ -31,6 +31,7 @@ class WebSocketService {
             this.ws.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
+                    console.log('WebSocket 메시지 수신:', data);
                     if (this.onMessageCallback) {
                         this.onMessageCallback(data);
                     }

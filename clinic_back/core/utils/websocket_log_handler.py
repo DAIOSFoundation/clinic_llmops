@@ -22,6 +22,7 @@ class WebSocketLogHandler(logging.Handler):
             # WebSocket을 통해 클라이언트에게 전송
             send_log_to_clients(log_message, record.levelname)
             
-        except Exception:
-            # WebSocket 전송 실패 시 무시 (로그 시스템이 중단되지 않도록)
+        except Exception as e:
+            # WebSocket 전송 실패 시 디버깅 정보 출력
+            print(f"WebSocket 로그 핸들러 오류: {e}")
             pass 

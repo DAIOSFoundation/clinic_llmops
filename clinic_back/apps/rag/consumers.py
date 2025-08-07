@@ -28,13 +28,19 @@ class LogConsumer(AsyncWebsocketConsumer):
 
 # 동기 함수로 로그를 전송하는 헬퍼 함수
 def send_log_to_clients(message, level="INFO"):
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        "logs",
-        {
-            "type": "log_message",
-            "message": message,
-            "level": level,
-            "timestamp": "now"  # 실제로는 datetime.now().isoformat() 사용
-        }
-    ) 
+    try:
+        from datetime import datetime
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            "logs",
+            {
+                "type": "log_message",
+                "message": message,
+                "level": level,
+                "timestamp": datetime.now().isoformat()
+            }
+        )
+    except Exception as e:
+        # WebSocket 전송 실패 시 로그 출력 (디버깅용)
+        print(f"WebSocket 로그 전송 실패: {e}")
+        pass 
