@@ -19,6 +19,7 @@ httpx==0.28.1
 # WebSocket support
 channels==4.0.0
 channels-redis==4.1.0
+konlpy==0.6.0
 
 # Google Cloud Storage (for file uploads)
 google-cloud-storage==3.1.0

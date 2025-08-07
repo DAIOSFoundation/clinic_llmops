@@ -6,6 +6,7 @@ import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
+from core.utils.korean_tokenizer import extract_korean_keywords, get_korean_similarity_score
 
 logger = logging.getLogger(__name__)
 
@@ -125,20 +126,14 @@ def serialize_similarity_results(results: List[Tuple[float, any]]) -> List[Dict]
 
 def keyword_filter_documents(query: str, docs: List, max_candidates: int = 50) -> List:
     """
-    키워드 기반 1차 필터링을 수행합니다.
+    한국어 형태소 분석을 사용하여 키워드 기반 1차 필터링을 수행합니다.
+    조사를 제거하고 어간을 추출하여 더 정확한 키워드 매칭을 수행합니다.
     """
     try:
         logger.info(f"키워드 필터링 시작 - 쿼리: {query}")
         
-        # 쿼리에서 키워드 추출 (더 정교한 토큰화)
-        import re
-        
-        # 특수문자 제거 및 토큰화
-        clean_query = re.sub(r'[^\w\s]', '', query.lower())
-        query_keywords = set(clean_query.split())
-        
-        # 의미있는 키워드만 필터링 (1글자 단어 제외)
-        query_keywords = {kw for kw in query_keywords if len(kw) > 1}
+        # 한국어 형태소 분석을 사용하여 쿼리 키워드 추출
+        query_keywords = extract_korean_keywords(query)
         
         logger.info(f"추출된 쿼리 키워드: {query_keywords}")
         
@@ -154,36 +149,15 @@ def keyword_filter_documents(query: str, docs: List, max_candidates: int = 50) -
             else:
                 doc_text = str(doc)
             
-            # 문서 텍스트를 소문자로 변환하고 키워드 추출
-            clean_doc_text = re.sub(r'[^\w\s]', '', doc_text.lower())
-            doc_keywords = set(clean_doc_text.split())
+            # 한국어 형태소 분석을 사용하여 문서 키워드 추출
+            doc_keywords = extract_korean_keywords(doc_text)
             
-            # 의미있는 키워드만 필터링 (1글자 단어 제외)
-            doc_keywords = {kw for kw in doc_keywords if len(kw) > 1}
-            
-            # 키워드 매칭 점수 계산
-            intersection = len(query_keywords.intersection(doc_keywords))
-            union = len(query_keywords.union(doc_keywords))
-            
-            if union > 0:
-                jaccard_score = intersection / union
-            else:
-                jaccard_score = 0.0
-            
-            # 키워드 포함 개수 및 비율
-            keyword_count = intersection
-            keyword_ratio = keyword_count / len(query_keywords) if query_keywords else 0.0
-            
-            # 종합 점수 (키워드 매칭 + 포함 개수)
-            total_score = jaccard_score * 0.6 + keyword_ratio * 0.4
+            # 한국어 키워드 유사도 점수 계산
+            total_score = get_korean_similarity_score(query_keywords, doc_keywords)
             
             # 키워드가 하나도 매칭되지 않으면 매우 낮은 점수
-            if keyword_count == 0:
+            if total_score == 0.0:
                 total_score = 0.01
-            
-            # 상위 5개 문서의 점수만 로깅 (성능 고려) - WebSocket 로그 제한
-            # if len(doc_scores) < 5:
-            #     logger.info(f"문서 {i+1} 키워드 점수: Jaccard={jaccard_score:.3f}, 키워드수={keyword_count}, 총점={total_score:.3f}")
             
             doc_scores.append((total_score, i, doc))
         
