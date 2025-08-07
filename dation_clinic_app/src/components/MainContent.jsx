@@ -46,13 +46,8 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
         apiUrl = apiUrl.replace('http://localhost:8000', API_PROXY_PREFIX);
       }
       
-      // 상대 URL인 경우 절대 URL로 변환 (프록시 처리 후)
-      if (apiUrl.startsWith('/') && !apiUrl.startsWith(API_PROXY_PREFIX)) {
-        apiUrl = `${window.location.origin}${apiUrl}`;
-      }
-      
-      // API_PROXY_PREFIX로 시작하는 경우 절대 URL로 변환
-      if (apiUrl.startsWith(API_PROXY_PREFIX)) {
+      // 상대 URL인 경우 절대 URL로 변환
+      if (apiUrl.startsWith('/')) {
         apiUrl = `${window.location.origin}${apiUrl}`;
       }
       

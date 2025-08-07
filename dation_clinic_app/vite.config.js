@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://api.banya.ai',
+        target: 'http://localhost:8000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         secure: false, // 개발 환경에서 HTTPS 인증서 검증을 무시합니다. 프로덕션에서는 주의 필요.
