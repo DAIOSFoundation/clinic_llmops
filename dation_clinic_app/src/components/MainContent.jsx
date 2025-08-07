@@ -258,6 +258,10 @@ function MainContent({ chatHistory, setChatHistory, currentPromptInput, setCurre
 
     try {
       addApiCallLog('API', '관련 자료 검색 중...');
+      
+      // LLM 응답 생성 시작
+      addApiCallLog('LLM', '🤖 LLM 응답 생성 시작...', 0, 'Ollama Gemma3:27b 모델 호출');
+      
       // ragContext가 null이면 Gemini에 context 없이 질문만 전달
       const geminiResponse = await getGeminiTextResponse(userMessage.text, userMessage.image?.file, ragContext);
       
@@ -275,6 +279,10 @@ function MainContent({ chatHistory, setChatHistory, currentPromptInput, setCurre
       }
 
       setChatHistory((prev) => [...prev, modelMessage]);
+      
+      // LLM 응답 완료
+      addApiCallLog('LLM', '✅ LLM 응답 생성 완료!', 0, `총 ${geminiResponse.text.length}자 응답`);
+      
       // LLM 카드는 응답 완료 시 사라지도록 상태 변경 (이제 App.jsx에서 자동 처리되므로 제거)
       // updateApiCallLog(llmLogId, 'fading-out', 'LLM이 응답을 생성했습니다.'); 
       setLastLlmOutput(geminiResponse.text); // NEW: 최종 LLM 응답을 App.jsx로 전달
@@ -284,6 +292,10 @@ function MainContent({ chatHistory, setChatHistory, currentPromptInput, setCurre
 
     } catch (error) {
       console.error('Error calling Gemini API:', error);
+      
+      // LLM 응답 생성 실패
+      addApiCallLog('LLM', '❌ LLM 응답 생성 실패', 0, `오류: ${error.message}`);
+      
       setChatHistory((prev) => [...prev, { role: 'model', text: '죄송합니다. 메시지를 처리하는 데 문제가 발생했습니다. 다시 시도해 주세요.' }]);
       // LLM 카드는 에러 발생 시에도 사라지도록 상태 변경 (이제 App.jsx에서 자동 처리되므로 제거)
       // updateApiCallLog(llmLogId, 'fading-out', 'LLM 응답 생성 실패'); 

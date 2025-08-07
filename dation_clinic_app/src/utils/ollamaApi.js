@@ -94,6 +94,8 @@ JSON 형식으로만 응답해주세요:
 */
 export const getGeminiTextResponse = async (promptText, imageFile = null, context = null) => {
     try {
+        console.log("🤖 LLM 응답 생성 시작 - Ollama Gemma3:27b 호출");
+        
         const systemPrompt = `당신은 톡스앤필(Tox&Feel) 피부과의 친절하고 전문적인 스태프입니다.
 
 주요 역할과 응답 스타일:
@@ -109,9 +111,13 @@ export const getGeminiTextResponse = async (promptText, imageFile = null, contex
 
         let finalPrompt = promptText;
         if (context && context.trim() !== '') {
+            console.log("📄 컨텍스트 정보 포함하여 프롬프트 구성");
             finalPrompt = `[참고 정보]:\n${context}\n\n[환자 질문]:\n${promptText}`;
+        } else {
+            console.log("📝 컨텍스트 없이 사용자 질문만으로 프롬프트 구성");
         }
 
+        console.log("🚀 Ollama API 호출 시작...");
         const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
             method: 'POST',
             headers: {
@@ -134,8 +140,9 @@ export const getGeminiTextResponse = async (promptText, imageFile = null, contex
             throw new Error(`Ollama API error: ${response.status}`);
         }
 
+        console.log("✅ Ollama API 응답 수신 완료");
         const data = await response.json();
-        console.log("Ollama response for text:", data.response);
+        console.log("📝 LLM 응답 텍스트 생성 완료:", data.response.substring(0, 100) + "...");
         
         return { 
             text: data.response, 
@@ -143,7 +150,7 @@ export const getGeminiTextResponse = async (promptText, imageFile = null, contex
             imageMimeType: null 
         };
     } catch (error) {
-        console.error("Error calling Ollama API for text response:", error);
+        console.error("❌ LLM 응답 생성 실패:", error);
         return { 
             text: "죄송합니다. 응답을 생성하는 중에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", 
             imageUrl: null, 
