@@ -9,6 +9,7 @@ import InteractionPage from './components/InteractionPage';
 import MakePromptsPage from './components/MakePromptsPage';
 import RagSettingsPage from './components/RagSettingsPage';
 import { mockApi } from './api/mockApi';
+import websocketService from './services/websocketService';
 
 // 날짜를 동적으로 생성하는 헬퍼 함수
 const getRandomDate = () => {
@@ -60,6 +61,25 @@ function App() {
   // 앱 title 설정
   useEffect(() => {
     document.title = 'Tox&Feel';
+  }, []);
+
+  // WebSocket 연결 설정
+  useEffect(() => {
+    // WebSocket 메시지 핸들러 설정
+    websocketService.onMessage((data) => {
+      if (data.type === 'log') {
+        // 백엔드 로그를 프론트엔드 Action Status에 추가
+        addApiCallLog('Backend', data.message, null, `백엔드 로그: ${data.level}`);
+      }
+    });
+
+    // WebSocket 연결
+    websocketService.connect();
+
+    // 컴포넌트 언마운트 시 WebSocket 연결 해제
+    return () => {
+      websocketService.disconnect();
+    };
   }, []);
 
   // API 호출 로그를 추가하는 함수 (로그 ID 반환)

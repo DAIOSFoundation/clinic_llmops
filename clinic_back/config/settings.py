@@ -24,6 +24,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # WSGI 서버 설정
 WSGI_APPLICATION = "config.wsgi.application"
 
+# Channels 설정
+ASGI_APPLICATION = "config.asgi.application"
+
+# Channel Layers 설정 (Redis 사용)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
+
 ALLOWED_HOSTS = ["*"]
 
 
@@ -56,6 +66,7 @@ INSTALLED_APPS = [
     "storages",
     "apps.user",
     "apps.rag",
+    "channels",
 ]
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "core.exceptions.exception_handler.base_exception_handler",
@@ -116,6 +127,10 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "simple",
         },
+        "websocket": {
+            "class": "core.utils.websocket_log_handler.WebSocketLogHandler",
+            "formatter": "simple",
+        },
     },
     "loggers": {
         "django": {
@@ -128,6 +143,7 @@ LOGGING = {
         "apps": {
             "handlers": [
                 "console",
+                "websocket",
             ],
             "level": "INFO",
             "propagate": False,

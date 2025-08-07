@@ -255,6 +255,19 @@
   40% { opacity: 1; }
 }
 
+/* Backend type (새로 추가) */
+.api-call-log-item.backend {
+  background-color: #f0f8ff; /* Light blue background */
+  border: 1px solid #4682b4; /* Steel blue border */
+  color: #2f4f4f; /* Dark slate gray text */
+}
+
+.api-call-log-item.backend .log-arrow,
+.api-call-log-item.backend .log-timestamp,
+.api-call-log-item.backend .log-type {
+  color: #2f4f4f; /* Apply text color to specific elements */
+}
+
 /* NEW: Source 타입의 log-header 내부 요소 조정 */
 .api-call-log-item.source .log-header { 
   display: flex; /* 헤더 다시 보이게 */
