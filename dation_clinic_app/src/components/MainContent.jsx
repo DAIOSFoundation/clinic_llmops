@@ -51,6 +51,11 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
         apiUrl = `${window.location.origin}${apiUrl}`;
       }
       
+      // API_PROXY_PREFIX로 시작하는 경우 절대 URL로 변환
+      if (apiUrl.startsWith(API_PROXY_PREFIX)) {
+        apiUrl = `${window.location.origin}${apiUrl}`;
+      }
+      
       console.log('처리 후 API URL:', apiUrl);
       
       // 한국어 인코딩 개선: URLSearchParams 사용

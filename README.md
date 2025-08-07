@@ -374,7 +374,7 @@ React Components → API Layer → Electron Main Process
 - **API 제공**: RESTful API를 통한 외부 연동
 
 ### 2. Tox&Feel AI 병원 관리 시스템 (dation_clinic_app)
-- **AI 챗봇**: Ollama Gemma3:27b 기반 대화형 인터페이스 (톡스앤필 스태프 역할)
+- **AI 챗봇**: Banya Gemma 27b Tuned 모델 기반 대화형 인터페이스 (톡스앤필 스태프 역할)
 - **RAG API 설정**: 다중 RAG API 관리 및 설정
 - **환자 관리**: EMR 데이터 관리
 - **예약 시스템**: 환자 예약 관리
