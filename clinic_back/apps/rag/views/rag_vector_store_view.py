@@ -87,10 +87,8 @@ class RagVectorStoreAPIView(APIView):
             total_time = end_time - start_time
             logger.info(f"✅ 유사도 검색 완료 - 소요시간: {total_time:.2f}초")
             
-            # 추론된 데이터 조립 시작
-            logger.info(f"📄 추론된 데이터 조립 시작...")
+            # 응답 직렬화
             serializer = RagRetrieverResponseSerializer({"documents": documents})
-            logger.info(f"✅ 추론된 데이터 조립 완료")
             
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:

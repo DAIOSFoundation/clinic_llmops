@@ -144,7 +144,7 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
   }
 
   // 7. 컨텍스트 추출 및 출처 로그 기록
-  addApiCallLog('Searching', '📄 추론된 데이터 조립 중...', 0, '관련 문서 내용 정리');
+  addApiCallLog('Searching', '📄 컨텍스트 추출 중...', 0, '관련 문서 내용 정리');
   
   if (ragData?.data?.documents?.length > 0) {
     // 컨텍스트 최적화: 각 문서의 내용을 요약하고 길이 제한
@@ -178,8 +178,8 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
     addApiCallLog('Context', `⚠️ 관련 문서 없음`, 0, '컨텍스트 없음');
   }
   
-  // 8. 추론된 데이터 조립 완료
-  addApiCallLog('Searching', '✅ 추론된 데이터 조립 완료!', 0, '모든 단계 완료');
+  // 8. 검색 완료
+  addApiCallLog('Searching', '✅ RAG 검색 완료!', 0, '모든 단계 완료');
   
   return { category, ragContext };
 }
