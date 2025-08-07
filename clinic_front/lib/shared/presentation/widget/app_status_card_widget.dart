@@ -12,6 +12,7 @@ class AppStatusCardWidget
   final String title;
   final String description;
   final DateTime date;
+  final String? apiUrl; // API URL 추가
 
   final VoidCallback onPressed;
   // final Color? statusColor;
@@ -25,6 +26,7 @@ class AppStatusCardWidget
     required this.title,
     required this.description,
     required this.date,
+    this.apiUrl, // API URL 파라미터 추가
     required this.onPressed,
   });
 
@@ -160,6 +162,45 @@ class AppStatusCardWidget
                     height:
                         8.0,
                   ),
+                  // API URL 표시
+                  if (apiUrl != null) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 4.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(4.0),
+                        border: Border.all(
+                          color: Colors.blue.withOpacity(0.3),
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.api,
+                            size: 12.0,
+                            color: Colors.blue,
+                          ),
+                          const SizedBox(width: 4.0),
+                          Expanded(
+                            child: Text(
+                              'API Ready',
+                              style: AppTextStyles.labelSm(
+                                context,
+                              ).copyWith(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 4.0),
+                  ],
                   Text(
                     "${date.toString().split(' ')[0]} Updated",
                     style: AppTextStyles.labelSm(

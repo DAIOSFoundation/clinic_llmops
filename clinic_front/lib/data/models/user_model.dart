@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:banya_llmops/core/entities/user_entity.dart';
 
 part 'user_model.g.dart';
 
@@ -20,6 +21,16 @@ class UserModel extends Equatable {
       _$UserModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
+  
+  UserEntity toEntity() {
+    return UserEntity(
+      id: id,
+      name: name,
+      email: email,
+      imageUrl: imageUrl,
+    );
+  }
+  
   @override
   List<Object?> get props => [id, name, email, imageUrl];
 }

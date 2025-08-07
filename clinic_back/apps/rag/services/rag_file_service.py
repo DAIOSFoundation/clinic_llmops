@@ -120,5 +120,8 @@ class RagFileService:
             )
             chunks = text_splitter.split_documents(documents)
             return chunks
+        except ImportError as e:
+            # ImportError를 문자열로 변환하여 JSON 직렬화 가능하게 함
+            raise AppException(f"Import error: {str(e)}")
         except Exception as e:
-            raise AppException(e)
+            raise AppException(f"Error processing document: {str(e)}")

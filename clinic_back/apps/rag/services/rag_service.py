@@ -9,6 +9,7 @@ from apps.rag.infra.faiss_vector_store_manager import (
     create_or_update_faiss_vector_store,
     delete_faiss_vector_store,
 )
+from core.exceptions.app_exception import AppException
 
 import uuid
 
@@ -24,7 +25,7 @@ class RagService:
 
     @staticmethod
     def create(
-        user_id: uuid.UUID, name: str, description: str, rag_file_ids: List[int]
+        user_id: uuid.UUID, name: str, description: str, rag_file_ids: List[uuid.UUID]
     ) -> RagEntity:
         try:
             rag = RagRepository.create(
@@ -47,8 +48,12 @@ class RagService:
             if all_chunks:
                 create_or_update_faiss_vector_store(all_chunks, rag.id)
             return rag
-        except:
-            raise
+        except Exception as e:
+            # ImportError를 문자열로 변환하여 JSON 직렬화 가능하게 함
+            if isinstance(e, ImportError):
+                raise AppException(f"Import error: {str(e)}")
+            else:
+                raise AppException(f"Error creating RAG: {str(e)}")
 
     @staticmethod
     def get_by_id(id: uuid.UUID, user_id: uuid.UUID) -> Union[RagEntity, None]:

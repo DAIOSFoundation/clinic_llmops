@@ -68,10 +68,10 @@ def get_fasttext_model():
     global _fasttext_model_instance
     if _fasttext_model_instance is None:
         try:
-            model_path = os.path.join(settings.MODEL_DIR, settings.FASTTEXT_MODEL)
-
-            logger.info(f"⏳ FastText 모델 로딩 시작: {model_path}")
-            _fasttext_model_instance = fasttext.load_model(model_path)
+            # 온라인 모델 사용
+            model_name = settings.FASTTEXT_MODEL
+            logger.info(f"⏳ FastText 모델 로딩 시작 (온라인): {model_name}")
+            _fasttext_model_instance = fasttext.load_model(model_name)
             logger.info("✅ FastText 모델 로드 완료")
         except ValueError as ve:
             logger.error(f"❌ FastText 모델 로드 실패 (파일 없음 또는 손상): {ve}")

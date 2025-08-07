@@ -75,13 +75,11 @@ RAG_FAISS_INDEX_PATH = os.path.join(DATA_DIR, "rag")
 # FasetText 모델 경로
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 
-# FasetText 모델 이름
+# FastText 모델 이름 (온라인 사용)
 FASTTEXT_MODEL = "cc.ko.300.bin"
 
 # Sentence Transformer 모델
-SENTENCE_TRANSFORMER_MODEL = os.path.join(
-    BASE_DIR, "models", "paraphrase-multilingual-mpnet-base-v2"
-)
+SENTENCE_TRANSFORMER_MODEL = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
 
 
 # Log

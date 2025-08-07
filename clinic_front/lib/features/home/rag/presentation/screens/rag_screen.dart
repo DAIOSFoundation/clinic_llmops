@@ -1,3 +1,4 @@
+import 'package:banya_llmops/app/app_env.dart';
 import 'package:banya_llmops/features/home/presentation/screens/contents_layout.dart';
 import 'package:banya_llmops/features/home/rag/presentation/blocs/rag_bloc.dart';
 import 'package:banya_llmops/features/home/rag/presentation/blocs/rag_event.dart';
@@ -70,6 +71,7 @@ class _RagState extends State<RagScreen> with RouteAware {
                       title: rag.name,
                       description: rag.description,
                       date: rag.createdAt,
+                      apiUrl: '${AppEnv.baseURL}/api/v1/rags/retriever/${rag.id}',
                       onPressed:
                           () => context.pushNamed(
                             RAGDetailScreen.routeName,
@@ -92,6 +94,7 @@ class _RagState extends State<RagScreen> with RouteAware {
                       title: rag.name,
                       description: rag.description,
                       date: rag.createdAt,
+                      apiUrl: '${AppEnv.baseURL}/api/v1/rags/retriever/${rag.id}',
                       onPressed:
                           () => context.pushNamed(
                             RAGDetailScreen.routeName,
@@ -114,6 +117,7 @@ class _RagState extends State<RagScreen> with RouteAware {
                       title: rag.name,
                       description: rag.description,
                       date: rag.createdAt,
+                      apiUrl: '${AppEnv.baseURL}/api/v1/rags/retriever/${rag.id}',
                       onPressed:
                           () => context.pushNamed(
                             RAGDetailScreen.routeName,
