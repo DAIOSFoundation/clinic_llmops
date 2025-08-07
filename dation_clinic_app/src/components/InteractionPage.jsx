@@ -3,7 +3,7 @@ import './InteractionPage.css';
 import { mockApi, fixedLayoutData } from '../api/mockApi';
 import InputBox from './InputBox';
 import LightbulbIcon from '../assets/lightbulb.png';
-import { getGeminiIntent } from '../utils/geminiApi';
+import { getGeminiIntent } from '../utils/ollamaApi';
 
 // NEW PROP: onLlmExplanationChange, clearSourceLogs
 function InteractionPage({ addApiCallLog, clearSourceLogs, selectedLLM, onLlmExplanationChange, currentOperator }) {

@@ -5,7 +5,7 @@ import InputBox from './InputBox';
 import ReactMarkdown from 'react-markdown'; // ReactMarkdown import
 import remarkGfm from 'remark-gfm'; // GitHub Flavored Markdown 지원
 import rehypeRaw from 'rehype-raw'; // HTML 렌더링 지원 (필요시)
-import { getGeminiTextResponse } from '../utils/geminiApi'; // 변경된 함수 임포트
+import { getGeminiTextResponse } from '../utils/ollamaApi'; // Ollama API 임포트
 import { calculateSimilarity } from '../utils/textSimilarity'; // NEW: 유사도 계산 함수 임포트
 import PromptExamplesPopup from './PromptExamplesPopup'; // 팝업 컴포넌트 임포트
 import { loadRagApis, findBestMatchingRagApi, initializeDefaultRagApis } from '../utils/ragApiManager'; // RAG API 관리 함수 임포트
@@ -38,16 +38,16 @@ async function getCategoryAndRagContext(question, addApiCallLog) {
     try {
       let apiUrl = api.url;
       
-      // 개발 환경에서 localhost URL을 프록시를 통해 호출
+      // URL 검증 및 수정
+      console.log('처리 전 API URL:', apiUrl);
+      
+      // 개발 환경에서 localhost:8000 URL을 프록시를 통해 호출
       if (import.meta.env.DEV && apiUrl.includes('localhost:8000')) {
         apiUrl = apiUrl.replace('http://localhost:8000', API_PROXY_PREFIX);
       }
       
-      // URL 검증 및 수정
-      console.log('처리 전 API URL:', apiUrl);
-      
-      // 상대 URL인 경우 절대 URL로 변환
-      if (apiUrl.startsWith('/')) {
+      // 상대 URL인 경우 절대 URL로 변환 (프록시 처리 후)
+      if (apiUrl.startsWith('/') && !apiUrl.startsWith(API_PROXY_PREFIX)) {
         apiUrl = `${window.location.origin}${apiUrl}`;
       }
       

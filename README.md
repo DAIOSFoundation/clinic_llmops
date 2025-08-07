@@ -1,14 +1,14 @@
-# NXDF LLMOps - 종합 의료 관리 시스템
+# Tox&Feel - AI 기반 의료 관리 시스템
 
-NXDF LLMOps는 **RAG(Retrieval-Augmented Generation) 기반 문서 검색 및 질의응답 시스템**과 **AI 기반 병원 관리 데스크톱 애플리케이션**을 포함한 종합 의료 관리 시스템입니다.
+Tox&Feel는 **RAG(Retrieval-Augmented Generation) 기반 문서 검색 및 질의응답 시스템**과 **AI 기반 병원 관리 데스크톱 애플리케이션**을 포함한 종합 의료 관리 시스템입니다.
 
 ## 📋 프로젝트 개요
 
 이 프로젝트는 다음과 같은 세 가지 주요 컴포넌트로 구성됩니다:
 
 1. **clinic_back** - Django 백엔드 API 서버 (RAG 시스템)
-2. **clinic_front** - Flutter 웹/모바일 프론트엔드
-3. **dation_clinic_app** - Electron 데스크톱 애플리케이션 (AI 병원 관리 시스템)
+2. **clinic_front** - Flutter 웹/모바일 프론트엔드 (RAG 관리)
+3. **dation_clinic_app** - Electron 데스크톱 애플리케이션 (Tox&Feel AI 병원 관리 시스템)
 
 ## 🏗️ 프로젝트 구조
 
@@ -17,6 +17,13 @@ clinic_llmops/
 ├── clinic_back/                 # Django 백엔드 (RAG 시스템)
 │   ├── apps/
 │   │   ├── rag/                # RAG 관련 기능
+│   │   │   ├── entities/       # RAG 엔티티
+│   │   │   ├── infra/          # FAISS, Ollama 인프라
+│   │   │   ├── models/         # Django 모델
+│   │   │   ├── repositories/   # 데이터 접근 계층
+│   │   │   ├── serializers/    # API 직렬화
+│   │   │   ├── services/       # 비즈니스 로직
+│   │   │   └── views/          # API 엔드포인트
 │   │   └── user/               # 사용자 관리
 │   ├── config/                 # Django 설정
 │   ├── core/                   # 핵심 유틸리티
@@ -24,14 +31,22 @@ clinic_llmops/
 ├── clinic_front/               # Flutter 프론트엔드
 │   ├── lib/
 │   │   ├── features/           # 기능별 모듈
+│   │   │   ├── home/           # 홈 화면
+│   │   │   │   └── rag/        # RAG 관리 기능
+│   │   │   └── login/          # 로그인/회원가입
 │   │   ├── shared/             # 공통 컴포넌트
 │   │   └── app/                # 앱 설정
 │   └── web/                    # 웹 빌드
-└── dation_clinic_app/          # Electron 데스크톱 앱
+└── dation_clinic_app/          # Electron 데스크톱 앱 (Tox&Feel)
     ├── src/
     │   ├── components/         # React 컴포넌트
+    │   │   ├── RagSettingsPage.jsx  # RAG API 설정
+    │   │   ├── MainContent.jsx      # 메인 콘텐츠
+    │   │   └── InteractionPage.jsx  # 상호작용 페이지
     │   ├── api/                # API 모듈
     │   └── utils/              # 유틸리티
+    │       ├── ragApiManager.js     # RAG API 관리
+    │       └── geminiApi.js         # Gemini AI 연동
     └── public/                 # 정적 파일
 ```
 
@@ -45,7 +60,7 @@ clinic_llmops/
 - **AI/ML**: 
   - FAISS (벡터 검색)
   - Sentence Transformers (텍스트 임베딩)
-  - FastText (텍스트 임베딩)
+  - Ollama (로컬 LLM - Gemma2:2b)
   - LangChain (문서 처리)
 - **Storage**: Google Cloud Storage
 - **CORS**: django-cors-headers
@@ -58,11 +73,11 @@ clinic_llmops/
 - **Dependency Injection**: Get It 8.0.3
 - **Code Generation**: JSON Serializable, Build Runner
 
-### Desktop App (dation_clinic_app)
+### Desktop App (dation_clinic_app - Tox&Feel)
 - **Framework**: React 18.2.0
 - **Desktop**: Electron 31.0.2
 - **Build Tool**: Vite 5.3.0
-- **AI**: Google Generative AI (@google/generative-ai)
+- **AI**: Ollama Gemma3:27b (로컬 LLM)
 - **Markdown**: react-markdown + rehype-raw + remark-gfm
 - **Package**: electron-builder
 
@@ -91,10 +106,10 @@ cd clinic_front
 flutter pub get
 
 # 웹 실행
-flutter run -d chrome --web-port=3000
+flutter run -d web-server --web-port=3000
 ```
 
-### 3. 데스크톱 앱 실행 (Electron)
+### 3. 데스크톱 앱 실행 (Tox&Feel)
 
 ```bash
 # dation_clinic_app 디렉토리로 이동
@@ -104,7 +119,7 @@ cd dation_clinic_app
 npm install
 
 # 개발 모드 실행
-npm run electron:dev
+npm run dev
 ```
 
 ### 4. 테스트 계정
@@ -137,7 +152,19 @@ venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 ```
 
-#### 3. 데이터베이스 설정
+#### 3. Ollama 설치 (로컬 LLM)
+```bash
+# macOS
+brew install ollama
+
+# Linux
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Gemma3:27b 모델 다운로드
+ollama pull gemma3:27b
+```
+
+#### 4. 데이터베이스 설정
 ```bash
 # 마이그레이션 실행
 python manage.py makemigrations
@@ -161,7 +188,7 @@ print(f"사용자 생성 완료: {user.email}")
 exit()
 ```
 
-#### 4. 서버 실행
+#### 5. 서버 실행
 ```bash
 python manage.py runserver 0.0.0.0:8000
 ```
@@ -188,7 +215,7 @@ dart run build_runner build
 #### 3. 앱 실행
 ```bash
 # 웹 실행
-flutter run -d chrome --web-port=3000
+flutter run -d web-server --web-port=3000
 
 # 모바일 실행 (iOS)
 flutter run -d ios
@@ -197,7 +224,7 @@ flutter run -d ios
 flutter run -d android
 ```
 
-### Desktop App 설치 (dation_clinic_app)
+### Desktop App 설치 (dation_clinic_app - Tox&Feel)
 
 #### 1. Node.js 환경 설정
 ```bash
@@ -283,14 +310,25 @@ Content-Type: multipart/form-data
 file: [파일]
 ```
 
-#### RAG 검색
+#### RAG 검색 (하이브리드 검색)
 ```http
-POST /api/v1/rags/retriever/{rag_id}
+GET /api/v1/rags/retriever/{rag_id}?question={질문}
 Authorization: Bearer {access_token}
-Content-Type: application/json
+```
 
+#### 응답
+```json
 {
-  "query": "검색 질문"
+  "results": [
+    {
+      "content": "검색된 문서 내용",
+      "score": 0.85,
+      "metadata": {
+        "source": "파일명.pdf",
+        "page": 1
+      }
+    }
+  ]
 }
 ```
 
@@ -321,7 +359,7 @@ React Components → API Layer → Electron Main Process
 ```
 
 - **React Components**: UI 렌더링
-- **API Layer**: Google AI 및 Mock API 연동
+- **API Layer**: Google AI 및 RAG API 연동
 - **Electron Main Process**: 데스크톱 앱 관리
 
 ## 🔍 주요 기능
@@ -329,16 +367,21 @@ React Components → API Layer → Electron Main Process
 ### 1. RAG 시스템 (clinic_back + clinic_front)
 - **문서 업로드**: PDF, DOCX 등 다양한 형식 지원
 - **벡터 검색**: FAISS를 이용한 고속 유사도 검색
+- **하이브리드 검색**: 키워드 매칭 + LLM 유사도 검색
+- **Ollama 연동**: 로컬 Gemma2:2b 모델을 이용한 유사도 계산
 - **질의응답**: 업로드된 문서 기반 AI 응답
+- **문서 정보**: 문서 개수 및 크기 정보 표시
 - **API 제공**: RESTful API를 통한 외부 연동
 
-### 2. 병원 관리 시스템 (dation_clinic_app)
-- **AI 챗봇**: Google Gemini AI 기반 대화형 인터페이스
+### 2. Tox&Feel AI 병원 관리 시스템 (dation_clinic_app)
+- **AI 챗봇**: Ollama Gemma3:27b 기반 대화형 인터페이스 (톡스앤필 스태프 역할)
+- **RAG API 설정**: 다중 RAG API 관리 및 설정
 - **환자 관리**: EMR 데이터 관리
 - **예약 시스템**: 환자 예약 관리
 - **수술 기록**: 수술 관련 데이터 관리
 - **CRM 시스템**: 고객 관계 관리
 - **설문조사**: 환자 만족도 조사
+- **실시간 로그**: API 호출 상태 모니터링
 
 ### 3. 통합 기능
 - **멀티 플랫폼**: 웹, 모바일, 데스크톱 지원
@@ -407,11 +450,24 @@ rm -rf node_modules package-lock.json
 npm install
 ```
 
-#### 4. 포트 충돌
+#### 4. Ollama 연결 문제
+```bash
+# Ollama 서비스 상태 확인
+ollama list
+
+# 모델 재다운로드
+ollama pull gemma3:27b
+
+# 서비스 재시작
+ollama serve
+```
+
+#### 5. 포트 충돌
 ```bash
 # 사용 중인 포트 확인
 lsof -i :8000  # 백엔드
 lsof -i :3000  # 프론트엔드
+lsof -i :5173  # Electron 앱
 ```
 
 ### 로그 확인
@@ -432,6 +488,12 @@ flutter logs
 
 # 웹 브라우저 개발자 도구
 # Console 탭에서 에러 확인
+```
+
+#### Electron 앱 로그
+```bash
+# 개발자 도구 열기
+# Ctrl+Shift+I (Windows/Linux) 또는 Cmd+Option+I (macOS)
 ```
 
 ## 📝 개발 가이드
@@ -473,22 +535,26 @@ flutter test
 flutter test test/widget_test.dart
 ```
 
+## 🔄 최근 업데이트
+
+### v2.0.0 (2024-8-7)
+- **제조용 BOM/SOP 로직 완전 제거**: 모든 관련 컨텐츠와 로직 삭제
+- **앱명 변경**: "Dation MK Agent" → "Tox&Feel"
+- **AI 엔진 변경**: Google Gemini → Ollama Gemma3:27b (로컬 LLM)
+- **톡스앤필 스태프 역할 설정**: 친절하고 전문적인 피부과 스태프로서의 응답 스타일 구현
+- **RAG API 기능 대폭 개선**:
+  - 하이브리드 검색 (키워드 + LLM 유사도) 구현
+  - Ollama Gemma2:2b 모델 연동 (백엔드)
+  - 병렬 처리 및 성능 최적화
+  - 타임아웃 설정 (1시간)
+- **RAG API 설정 페이지 추가**: 다중 RAG API 관리 기능
+- **Flutter 프론트엔드 개선**: 문서 개수 및 크기 정보 표시
+- **문법 오류 수정**: InteractionPage.jsx 중괄호 문제 해결
+
 ## 📄 라이선스
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다.
-
-## 🤝 기여
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📞 지원
-
-문제가 발생하거나 질문이 있으시면 이슈를 생성해 주세요.
+이 프로젝트의 상업적인 이용에 대해서는 **tony@banya.ai**로 문의해 주세요.
 
 ---
 
-**NXDF LLMOps** - 의료 업무 자동화와 AI 기반 의사결정 지원을 위한 종합적인 의료 관리 시스템 
+**Tox&Feel** - AI 기반 의료 업무 자동화와 의사결정 지원을 위한 종합적인 의료 관리 시스템 
