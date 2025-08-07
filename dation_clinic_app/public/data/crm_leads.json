@@ -1,0 +1,102 @@
+[
+  {
+    "lead_id": "L001",
+    "name": "박민지",
+    "channel": "Instagram DM",
+    "contact_method": "KakaoTalk",
+    "status": "New",
+    "created_at": "2025-06-10",
+    "preferred_procedure": "눈매교정",
+    "notes": "20대 여성, 대학생"
+  },
+  {
+    "lead_id": "L002",
+    "name": "김지훈",
+    "channel": "Web Form",
+    "contact_method": "Phone",
+    "status": "Contacted",
+    "created_at": "2025-06-11",
+    "preferred_procedure": "코 재수술",
+    "notes": "지방 거주, 야간 상담 선호"
+  },
+  {
+    "lead_id": "L003",
+    "name": "Sara Lim",
+    "channel": "Referral",
+    "contact_method": "Email",
+    "status": "New",
+    "created_at": "2025-06-12",
+    "preferred_procedure": "턱 보톡스",
+    "notes": "영어 가능"
+  },
+  {
+    "lead_id": "L004",
+    "name": "이정은",
+    "channel": "Naver Blog",
+    "contact_method": "KakaoTalk",
+    "status": "Qualified",
+    "created_at": "2025-06-13",
+    "preferred_procedure": "리프팅 패키지",
+    "notes": "결혼 준비"
+  },
+  {
+    "lead_id": "L005",
+    "name": "정현우",
+    "channel": "Walk-in",
+    "contact_method": "Phone",
+    "status": "New",
+    "created_at": "2025-06-14",
+    "preferred_procedure": "남자 쌍꺼풀",
+    "notes": "퇴근 후 상담"
+  },
+  {
+    "lead_id": "L006",
+    "name": "최유리",
+    "channel": "YouTube",
+    "contact_method": "KakaoTalk",
+    "status": "Contacted",
+    "created_at": "2025-06-15",
+    "preferred_procedure": "흉터 레이저",
+    "notes": "해외 체류 중"
+  },
+  {
+    "lead_id": "L007",
+    "name": "Marcus Kim",
+    "channel": "Instagram Ad",
+    "contact_method": "Email",
+    "status": "Qualified",
+    "created_at": "2025-06-15",
+    "preferred_procedure": "턱 필러",
+    "notes": "외국인, 통역 필요"
+  },
+  {
+    "lead_id": "L008",
+    "name": "박수진",
+    "channel": "TikTok",
+    "contact_method": "Phone",
+    "status": "Lost",
+    "created_at": "2025-06-16",
+    "preferred_procedure": "지방흡입",
+    "notes": "가격 민감"
+  },
+  {
+    "lead_id": "L009",
+    "name": "이서아",
+    "channel": "Facebook",
+    "contact_method": "KakaoTalk",
+    "status": "New",
+    "created_at": "2025-06-17",
+    "preferred_procedure": "팔뚝 지방흡입",
+    "notes": "휴가 기간 한정"
+  },
+  {
+    "lead_id": "L010",
+    "name": "장도현",
+    "channel": "Referral",
+    "contact_method": "Phone",
+    "status": "Qualified",
+    "created_at": "2025-06-18",
+    "preferred_procedure": "모발이식",
+    "notes": "30대 남성"
+  }
+]

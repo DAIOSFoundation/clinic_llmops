@@ -1,0 +1,72 @@
+[
+  {
+    "survey_id": "SV601",
+    "patient_id": "P001",
+    "date_sent": "2025-07-02",
+    "rating": 5,
+    "comment": "친절했어요"
+  },
+  {
+    "survey_id": "SV602",
+    "patient_id": "P002",
+    "date_sent": "2025-07-10",
+    "rating": null,
+    "comment": "미응답"
+  },
+  {
+    "survey_id": "SV603",
+    "patient_id": "P003",
+    "date_sent": "2025-07-08",
+    "rating": 4,
+    "comment": "대기 길었음"
+  },
+  {
+    "survey_id": "SV604",
+    "patient_id": "P004",
+    "date_sent": "2025-07-09",
+    "rating": 5,
+    "comment": "효과 만족"
+  },
+  {
+    "survey_id": "SV605",
+    "patient_id": "P005",
+    "date_sent": "2025-07-15",
+    "rating": null,
+    "comment": "미응답"
+  },
+  {
+    "survey_id": "SV606",
+    "patient_id": "P006",
+    "date_sent": "2025-07-15",
+    "rating": 4,
+    "comment": "원격 상담 편리"
+  },
+  {
+    "survey_id": "SV607",
+    "patient_id": "P007",
+    "date_sent": "2025-07-16",
+    "rating": 5,
+    "comment": "통역 서비스 굿"
+  },
+  {
+    "survey_id": "SV608",
+    "patient_id": "P008",
+    "date_sent": "2025-07-17",
+    "rating": null,
+    "comment": "미응답"
+  },
+  {
+    "survey_id": "SV609",
+    "patient_id": "P009",
+    "date_sent": "2025-07-18",
+    "rating": 3,
+    "comment": "가격 부담"
+  },
+  {
+    "survey_id": "SV610",
+    "patient_id": "P010",
+    "date_sent": "2025-07-22",
+    "rating": null,
+    "comment": "예정"
+  }
+]

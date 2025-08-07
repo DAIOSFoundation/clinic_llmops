@@ -1,0 +1,92 @@
+[
+  {
+    "surgery_id": "S201",
+    "patient_id": "P001",
+    "procedure": "눈매교정",
+    "date": "2025-06-25",
+    "surgeon": "Dr. Han",
+    "anesthesia": "LA",
+    "notes": "무봉합"
+  },
+  {
+    "surgery_id": "S202",
+    "patient_id": "P002",
+    "procedure": "코 재수술",
+    "date": "2025-07-02",
+    "surgeon": "Dr. Park",
+    "anesthesia": "GA",
+    "notes": "실리콘 교체"
+  },
+  {
+    "surgery_id": "S203",
+    "patient_id": "P004",
+    "procedure": "실리프팅",
+    "date": "2025-07-04",
+    "surgeon": "Dr. Lee",
+    "anesthesia": "LA",
+    "notes": "10줄"
+  },
+  {
+    "surgery_id": "S204",
+    "patient_id": "P006",
+    "procedure": "흉터 레이저",
+    "date": "2025-07-05",
+    "surgeon": "Dr. Choi",
+    "anesthesia": "Topical",
+    "notes": "프락셔날"
+  },
+  {
+    "surgery_id": "S205",
+    "patient_id": "P007",
+    "procedure": "턱 필러",
+    "date": "2025-07-06",
+    "surgeon": "Dr. Kim",
+    "anesthesia": "LA",
+    "notes": "2 cc"
+  },
+  {
+    "surgery_id": "S206",
+    "patient_id": "P003",
+    "procedure": "턱 보톡스",
+    "date": "2025-07-06",
+    "surgeon": "Dr. Han",
+    "anesthesia": "LA",
+    "notes": "50 U"
+  },
+  {
+    "surgery_id": "S207",
+    "patient_id": "P009",
+    "procedure": "팔뚝 지방흡입",
+    "date": "2025-07-10",
+    "surgeon": "Dr. Park",
+    "anesthesia": "GA",
+    "notes": "600 cc"
+  },
+  {
+    "surgery_id": "S208",
+    "patient_id": "P005",
+    "procedure": "남자 쌍꺼풀",
+    "date": "2025-07-12",
+    "surgeon": "Dr. Lee",
+    "anesthesia": "LA",
+    "notes": "매몰법"
+  },
+  {
+    "surgery_id": "S209",
+    "patient_id": "P010",
+    "procedure": "모발이식",
+    "date": "2025-07-15",
+    "surgeon": "Dr. Choi",
+    "anesthesia": "GA",
+    "notes": "2500모"
+  },
+  {
+    "surgery_id": "S210",
+    "patient_id": "P008",
+    "procedure": "지방흡입 상담",
+    "date": "2025-07-15",
+    "surgeon": "Dr. Kim",
+    "anesthesia": "",
+    "notes": "수술 미정"
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "product_id": "PR501",
+    "name": "재생크림 A",
+    "category": "Skincare",
+    "price_krw": 38000,
+    "stock": 120,
+    "recommended_use": "수술 부위 보습"
+  },
+  {
+    "product_id": "PR502",
+    "name": "비타민C 세럼 B",
+    "category": "Skincare",
+    "price_krw": 42000,
+    "stock": 80,
+    "recommended_use": "색소 완화"
+  },
+  {
+    "product_id": "PR503",
+    "name": "흉터연고 C",
+    "category": "OTC",
+    "price_krw": 25000,
+    "stock": 200,
+    "recommended_use": "절개 흉터"
+  },
+  {
+    "product_id": "PR504",
+    "name": "쿨링 마스크팩 D",
+    "category": "Mask",
+    "price_krw": 4500,
+    "stock": 600,
+    "recommended_use": "붓기 완화"
+  },
+  {
+    "product_id": "PR505",
+    "name": "자외선차단 E",
+    "category": "Sunscreen",
+    "price_krw": 32000,
+    "stock": 150,
+    "recommended_use": "레이저 시술 후"
+  },
+  {
+    "product_id": "PR506",
+    "name": "콜라겐 파우더 F",
+    "category": "Supplement",
+    "price_krw": 19000,
+    "stock": 90,
+    "recommended_use": "회복력 향상"
+  },
+  {
+    "product_id": "PR507",
+    "name": "멀티비타민 G",
+    "category": "Supplement",
+    "price_krw": 15000,
+    "stock": 110,
+    "recommended_use": "면역력"
+  },
+  {
+    "product_id": "PR508",
+    "name": "히알루론 패드 H",
+    "category": "Skincare",
+    "price_krw": 8000,
+    "stock": 300,
+    "recommended_use": "보습"
+  },
+  {
+    "product_id": "PR509",
+    "name": "살균 거즈 I",
+    "category": "Dressing",
+    "price_krw": 3000,
+    "stock": 1000,
+    "recommended_use": "상처 소독"
+  },
+  {
+    "product_id": "PR510",
+    "name": "실리콘 시트 J",
+    "category": "Dressing",
+    "price_krw": 18000,
+    "stock": 70,
+    "recommended_use": "비대 흉터 예방"
+  }
+]

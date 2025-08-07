@@ -86,3 +86,22 @@ clinic_back/*.egg-info/
 
 clinic_back/models/
 clinic_back/models/paraphrase-multilingual-mpnet-base-v2/
+
+# =================================================================
+# Electron App (in /dation_clinic_app directory)
+# =================================================================
+dation_clinic_app/node_modules/
+dation_clinic_app/dist/
+dation_clinic_app/release/
+dation_clinic_app/.env.local
+dation_clinic_app/.env.development.local
+dation_clinic_app/.env.test.local
+dation_clinic_app/.env.production.local
+dation_clinic_app/npm-debug.log*
+dation_clinic_app/yarn-debug.log*
+dation_clinic_app/yarn-error.log*
+dation_clinic_app/out/
+dation_clinic_app/.next/
+dation_clinic_app/.nuxt/
+dation_clinic_app/.cache/
+dation_clinic_app/.parcel-cache/

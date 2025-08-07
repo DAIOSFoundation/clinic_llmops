@@ -1,0 +1,82 @@
+[
+  {
+    "appt_id": "A301",
+    "patient_id": "P001",
+    "datetime": "2025-06-24 15:00",
+    "procedure": "수술 전 검사",
+    "status": "Confirmed",
+    "room": "101"
+  },
+  {
+    "appt_id": "A302",
+    "patient_id": "P002",
+    "datetime": "2025-06-28 10:00",
+    "procedure": "CT 촬영",
+    "status": "Confirmed",
+    "room": "102"
+  },
+  {
+    "appt_id": "A303",
+    "patient_id": "P003",
+    "datetime": "2025-06-27 11:30",
+    "procedure": "상담",
+    "status": "Confirmed",
+    "room": "201"
+  },
+  {
+    "appt_id": "A304",
+    "patient_id": "P004",
+    "datetime": "2025-06-28 14:00",
+    "procedure": "피부 측정",
+    "status": "Confirmed",
+    "room": "103"
+  },
+  {
+    "appt_id": "A305",
+    "patient_id": "P005",
+    "datetime": "2025-06-29 19:00",
+    "procedure": "상담",
+    "status": "Tentative",
+    "room": "202"
+  },
+  {
+    "appt_id": "A306",
+    "patient_id": "P006",
+    "datetime": "2025-06-29 20:00",
+    "procedure": "원격 상담",
+    "status": "Virtual",
+    "room": ""
+  },
+  {
+    "appt_id": "A307",
+    "patient_id": "P007",
+    "datetime": "2025-06-30 13:00",
+    "procedure": "시술",
+    "status": "Confirmed",
+    "room": "203"
+  },
+  {
+    "appt_id": "A308",
+    "patient_id": "P008",
+    "datetime": "2025-06-30 16:00",
+    "procedure": "상담",
+    "status": "Pending",
+    "room": "204"
+  },
+  {
+    "appt_id": "A309",
+    "patient_id": "P009",
+    "datetime": "2025-07-01 15:00",
+    "procedure": "상담",
+    "status": "Confirmed",
+    "room": "205"
+  },
+  {
+    "appt_id": "A310",
+    "patient_id": "P010",
+    "datetime": "2025-07-02 09:00",
+    "procedure": "혈액검사",
+    "status": "Confirmed",
+    "room": "101"
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "patient_id": "P001",
+    "name": "박민지",
+    "dob": "2000-03-12",
+    "gender": "F",
+    "blood_type": "O+",
+    "allergies": "NKA",
+    "reg_date": "2025-06-18"
+  },
+  {
+    "patient_id": "P002",
+    "name": "김지훈",
+    "dob": "1994-09-27",
+    "gender": "M",
+    "blood_type": "A+",
+    "allergies": "Penicillin",
+    "reg_date": "2025-06-20"
+  },
+  {
+    "patient_id": "P003",
+    "name": "Sara Lim",
+    "dob": "1996-11-04",
+    "gender": "F",
+    "blood_type": "B+",
+    "allergies": "NKA",
+    "reg_date": "2025-06-20"
+  },
+  {
+    "patient_id": "P004",
+    "name": "이정은",
+    "dob": "1992-05-15",
+    "gender": "F",
+    "blood_type": "AB+",
+    "allergies": "Aspirin",
+    "reg_date": "2025-06-21"
+  },
+  {
+    "patient_id": "P005",
+    "name": "정현우",
+    "dob": "1989-12-30",
+    "gender": "M",
+    "blood_type": "O+",
+    "allergies": "NKA",
+    "reg_date": "2025-06-22"
+  },
+  {
+    "patient_id": "P006",
+    "name": "최유리",
+    "dob": "1998-07-07",
+    "gender": "F",
+    "blood_type": "A-",
+    "allergies": "Latex",
+    "reg_date": "2025-06-22"
+  },
+  {
+    "patient_id": "P007",
+    "name": "Marcus Kim",
+    "dob": "1990-01-19",
+    "gender": "M",
+    "blood_type": "O-",
+    "allergies": "NKA",
+    "reg_date": "2025-06-22"
+  },
+  {
+    "patient_id": "P008",
+    "name": "박수진",
+    "dob": "1997-08-21",
+    "gender": "F",
+    "blood_type": "B+",
+    "allergies": "NKA",
+    "reg_date": "2025-06-23"
+  },
+  {
+    "patient_id": "P009",
+    "name": "이서아",
+    "dob": "1999-04-10",
+    "gender": "F",
+    "blood_type": "AB+",
+    "allergies": "Shellfish",
+    "reg_date": "2025-06-23"
+  },
+  {
+    "patient_id": "P010",
+    "name": "장도현",
+    "dob": "1993-02-03",
+    "gender": "M",
+    "blood_type": "A+",
+    "allergies": "NKA",
+    "reg_date": "2025-06-24"
+  }
+]

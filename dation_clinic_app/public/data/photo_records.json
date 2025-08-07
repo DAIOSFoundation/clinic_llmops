@@ -1,0 +1,82 @@
+[
+  {
+    "photo_id": "PH401",
+    "patient_id": "P001",
+    "date_taken": "2025-06-18",
+    "view": "Front",
+    "file_path": "/photos/P001/front-before.jpg",
+    "notes": "전후 비교"
+  },
+  {
+    "photo_id": "PH402",
+    "patient_id": "P001",
+    "date_taken": "2025-06-27",
+    "view": "Front",
+    "file_path": "/photos/P001/front-after.jpg",
+    "notes": "수술 2일 후"
+  },
+  {
+    "photo_id": "PH403",
+    "patient_id": "P002",
+    "date_taken": "2025-06-20",
+    "view": "Side",
+    "file_path": "/photos/P002/side-before.jpg",
+    "notes": "이물감 확인"
+  },
+  {
+    "photo_id": "PH404",
+    "patient_id": "P003",
+    "date_taken": "2025-06-20",
+    "view": "45",
+    "file_path": "/photos/P003/45-before.jpg",
+    "notes": "턱 라인"
+  },
+  {
+    "photo_id": "PH405",
+    "patient_id": "P004",
+    "date_taken": "2025-06-21",
+    "view": "Front",
+    "file_path": "/photos/P004/front-before.jpg",
+    "notes": "리프팅"
+  },
+  {
+    "photo_id": "PH406",
+    "patient_id": "P005",
+    "date_taken": "2025-06-22",
+    "view": "Close",
+    "file_path": "/photos/P005/eyes-before.jpg",
+    "notes": "쌍꺼풀"
+  },
+  {
+    "photo_id": "PH407",
+    "patient_id": "P006",
+    "date_taken": "2025-06-22",
+    "view": "Close",
+    "file_path": "/photos/P006/scar-before.jpg",
+    "notes": "흉터"
+  },
+  {
+    "photo_id": "PH408",
+    "patient_id": "P007",
+    "date_taken": "2025-06-22",
+    "view": "Side",
+    "file_path": "/photos/P007/side-before.jpg",
+    "notes": "턱 필러"
+  },
+  {
+    "photo_id": "PH409",
+    "patient_id": "P009",
+    "date_taken": "2025-06-23",
+    "view": "Arm",
+    "file_path": "/photos/P009/arm-before.jpg",
+    "notes": "지방흡입"
+  },
+  {
+    "photo_id": "PH410",
+    "patient_id": "P010",
+    "date_taken": "2025-06-24",
+    "view": "Top",
+    "file_path": "/photos/P010/top-before.jpg",
+    "notes": "모발이식"
+  }
+]
