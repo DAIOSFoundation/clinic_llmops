@@ -250,15 +250,7 @@ function App() {
       date: getRandomDate(),
     },
 
-    {
-      id: 'image-analysis-guide',
-      title: '이미지 분석 가이드',
-      description: '이미지를 Ctr+C 로 복사하여 챗팅창에 Ctr+V 로 붙여넣고 다음가 같이 질문하세요.',
-      example: '첨부한 이미지에 대해 설명해줘',
-      category: 'General',
-      author: 'System',
-      date: getRandomDate(),
-    },
+
     {
       id: 'mes-plm-guide',
       title: 'MES/PLM 조회 가이드',
