@@ -167,7 +167,7 @@ def keyword_filter_documents(query: str, docs: List, max_candidates: int = 50) -
         # 상위 문서들 선택
         filtered_docs = [doc for score, i, doc in doc_scores[:max_candidates]]
         
-        logger.info(f"키워드 필터링 완료: {len(docs)}개 → {len(filtered_docs)}개")
+        logger.info(f"키워드 필터링 완료: {len(docs)}개 → {len(filtered_docs)}개 문서")
         
         return filtered_docs
         
@@ -227,7 +227,7 @@ def llm_similarity_search(query: str, docs: List, top_k: int = 5, model_name: st
         
         # 병렬 처리 실행
         max_workers = min(5, len(filtered_docs))  # 필터링된 문서가 적으므로 스레드 수 줄임
-        logger.info(f"LLM 병렬 처리 시작 - 스레드 수: {max_workers}")
+        logger.info(f"LLM 유사도 평가 시작 - 문서 수: {len(filtered_docs)}개")
         
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             # 필터링된 문서에 대해 병렬 처리 시작
@@ -236,18 +236,14 @@ def llm_similarity_search(query: str, docs: List, top_k: int = 5, model_name: st
                 for i, doc in enumerate(filtered_docs)
             }
             
-            # 완료된 작업들을 기다리며 진행상황 로깅
-            completed_count = 0
+            # 완료된 작업들을 기다림 (진행상황 로그 제거)
             for future in as_completed(future_to_doc):
                 doc_index, doc = future_to_doc[future]
-                completed_count += 1
                 
                 try:
                     success = future.result()
-                    if success:
-                                # 진행률 로그는 25% 단위로만 표시 (로그 빈도 감소)
-        if completed_count % max(1, len(filtered_docs) // 4) == 0 or completed_count == len(filtered_docs):
-            logger.info(f"LLM 진행률: {completed_count}/{len(filtered_docs)} ({completed_count/len(filtered_docs)*100:.1f}%)")
+                    if not success:
+                        logger.error(f"문서 {doc_index+1} 처리 실패")
                 except Exception as e:
                     logger.error(f"문서 {doc_index+1} 처리 중 예외 발생: {e}")
 
@@ -257,7 +253,7 @@ def llm_similarity_search(query: str, docs: List, top_k: int = 5, model_name: st
         
         end_time = time.time()
         total_time = end_time - start_time
-        logger.info(f"하이브리드 검색 완료 - 소요시간: {total_time:.2f}초, 결과 개수: {len(final_results)}개")
+        logger.info(f"LLM 유사도 평가 완료 - 소요시간: {total_time:.2f}초, 결과 개수: {len(final_results)}개")
         
         return final_results
         
