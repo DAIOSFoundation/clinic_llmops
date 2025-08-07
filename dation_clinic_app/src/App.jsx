@@ -87,7 +87,18 @@ function App() {
     // console.log(`App: Adding API call log - Type: ${type}, Message: ${message}`);
     let newLogId;
     setApiCallLogs(prevLogs => {
-      newLogId = prevLogs.length > 0 ? Math.max(...prevLogs.map(log => log.id)) + 1 : 1;
+      // 새로운 로그가 추가될 때, 기존의 'Assembling' 로그들을 완료 상태로 변경
+      const updatedLogs = prevLogs.map(log => {
+        if (log.type === 'Assembling' && log.status === 'active') {
+          return { ...log, status: 'fading-out' };
+        }
+        return log;
+      });
+
+      // 완료된 Assembling 로그들을 제거
+      const filteredLogs = updatedLogs.filter(log => !(log.type === 'Assembling' && log.status === 'fading-out'));
+
+      newLogId = filteredLogs.length > 0 ? Math.max(...filteredLogs.map(log => log.id)) + 1 : 1;
       const newLog = {
         id: newLogId,
         type,
@@ -100,25 +111,22 @@ function App() {
         ...(fileUrl && { fileUrl }) // NEW: fileUrl이 제공되면 추가
       };
 
-      const updatedLogs = [...prevLogs, newLog];
+      const finalLogs = [...filteredLogs, newLog];
 
-      // 로그 타입별로 다른 표시 시간 설정
-      let displayTime = 3000; // 기본 3초
-      
-      if (type === 'Backend') {
-        displayTime = 8000; // 백엔드 로그는 8초 (검색 과정이 오래 걸리므로)
-      } else if (type === 'Searching') {
-        displayTime = 5000; // 검색 로그는 5초
-      } else if (type === 'LLM') {
-        displayTime = 6000; // LLM 로그는 6초
-      } else if (type === 'API') {
-        displayTime = 4000; // API 로그는 4초
-      } else if (type === 'Assembling') {
-        displayTime = 10000; // Assembling 로그는 10초 (응답 조립 과정)
-      }
-      
-      // 'Source' 타입이 아닌 모든 로그는 설정된 시간 후 사라지도록 처리
-      if (type !== 'Source') {
+      // 로그 타입별로 다른 표시 시간 설정 (Assembling 제외)
+      if (type !== 'Source' && type !== 'Assembling') {
+        let displayTime = 3000; // 기본 3초
+        
+        if (type === 'Backend') {
+          displayTime = 8000; // 백엔드 로그는 8초 (검색 과정이 오래 걸리므로)
+        } else if (type === 'Searching') {
+          displayTime = 5000; // 검색 로그는 5초
+        } else if (type === 'LLM') {
+          displayTime = 6000; // LLM 로그는 6초
+        } else if (type === 'API') {
+          displayTime = 4000; // API 로그는 4초
+        }
+        
         setTimeout(() => {
           setApiCallLogs(currentLogs =>
             currentLogs.map(log =>
@@ -133,7 +141,7 @@ function App() {
         }, displayTime);
       }
 
-      return updatedLogs;
+      return finalLogs;
     });
     return newLogId; // 생성된 로그의 ID 반환
   }, []);
