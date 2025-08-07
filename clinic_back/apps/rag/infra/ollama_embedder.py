@@ -16,7 +16,8 @@ def get_llm_similarity_score(query: str, document_text: str, model_name: str = "
     """
     try:
         start_time = time.time()
-        logger.info(f"LLM 유사도 평가 시작 - 쿼리: {query[:50]}...")
+        # 상세 로그 제거 - WebSocket으로 전송되는 로그가 너무 많아지는 것을 방지
+        # logger.info(f"LLM 유사도 평가 시작 - 쿼리: {query[:50]}...")
         
         # Ollama API 엔드포인트
         url = "http://localhost:11434/api/generate"
@@ -49,15 +50,15 @@ def get_llm_similarity_score(query: str, document_text: str, model_name: str = "
         }
         
         # API 호출
-        logger.info(f"Ollama API 호출 시작...")
+        # logger.info(f"Ollama API 호출 시작...")
         response = requests.post(url, json=data, timeout=60)
         response.raise_for_status()
-        logger.info(f"Ollama API 호출 완료")
+        # logger.info(f"Ollama API 호출 완료")
         
         # 응답에서 점수 추출
         result = response.json()
         response_text = result.get("response", "").strip()
-        logger.info(f"Ollama 응답: {response_text[:100]}...")
+        # logger.info(f"Ollama 응답: {response_text[:100]}...")
         
                 # 숫자만 추출
         try:
@@ -71,7 +72,7 @@ def get_llm_similarity_score(query: str, document_text: str, model_name: str = "
                 
                 end_time = time.time()
                 elapsed_time = end_time - start_time
-                logger.info(f"LLM 유사도 평가 완료 - 점수: {score}, 소요시간: {elapsed_time:.2f}초")
+                # logger.info(f"LLM 유사도 평가 완료 - 점수: {score}, 소요시간: {elapsed_time:.2f}초")
                 
                 return score
             else:
@@ -180,9 +181,9 @@ def keyword_filter_documents(query: str, docs: List, max_candidates: int = 50) -
             if keyword_count == 0:
                 total_score = 0.01
             
-            # 상위 5개 문서의 점수만 로깅 (성능 고려)
-            if len(doc_scores) < 5:
-                logger.info(f"문서 {i+1} 키워드 점수: Jaccard={jaccard_score:.3f}, 키워드수={keyword_count}, 총점={total_score:.3f}")
+            # 상위 5개 문서의 점수만 로깅 (성능 고려) - WebSocket 로그 제한
+            # if len(doc_scores) < 5:
+            #     logger.info(f"문서 {i+1} 키워드 점수: Jaccard={jaccard_score:.3f}, 키워드수={keyword_count}, 총점={total_score:.3f}")
             
             doc_scores.append((total_score, i, doc))
         
@@ -235,7 +236,7 @@ def llm_similarity_search(query: str, docs: List, top_k: int = 5, model_name: st
                 if len(clean_text) > 2000:
                     clean_text = clean_text[:2000]
 
-                logger.info(f"문서 {doc_index+1}/{len(filtered_docs)} LLM 처리 중...")
+                # logger.info(f"문서 {doc_index+1}/{len(filtered_docs)} LLM 처리 중...")
                 # LLM을 사용한 유사도 점수 계산
                 score = get_llm_similarity_score(query, clean_text, model_name)
                 
@@ -243,7 +244,7 @@ def llm_similarity_search(query: str, docs: List, top_k: int = 5, model_name: st
                 with results_lock:
                     results.append((score, doc))
                     
-                logger.info(f"문서 {doc_index+1} 완료 - 점수: {score}")
+                # logger.info(f"문서 {doc_index+1} 완료 - 점수: {score}")
                 return True
                 
             except Exception as e:
@@ -270,7 +271,9 @@ def llm_similarity_search(query: str, docs: List, top_k: int = 5, model_name: st
                 try:
                     success = future.result()
                     if success:
-                        logger.info(f"LLM 진행률: {completed_count}/{len(filtered_docs)} ({completed_count/len(filtered_docs)*100:.1f}%)")
+                        # 진행률 로그는 10% 단위로만 표시
+                        if completed_count % max(1, len(filtered_docs) // 10) == 0 or completed_count == len(filtered_docs):
+                            logger.info(f"LLM 진행률: {completed_count}/{len(filtered_docs)} ({completed_count/len(filtered_docs)*100:.1f}%)")
                 except Exception as e:
                     logger.error(f"문서 {doc_index+1} 처리 중 예외 발생: {e}")
 
