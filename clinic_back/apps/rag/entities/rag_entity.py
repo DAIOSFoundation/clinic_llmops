@@ -18,3 +18,5 @@ class RagEntity:
     updated_at: datetime
     last_indexed_at: Optional[datetime]
     files: Optional[List[RagFileEntity]] = None
+    document_count: Optional[int] = None
+    total_size_mb: Optional[float] = None

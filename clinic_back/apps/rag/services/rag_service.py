@@ -8,6 +8,7 @@ from typing import Optional, List, Union
 from apps.rag.infra.faiss_vector_store_manager import (
     create_or_update_faiss_vector_store,
     delete_faiss_vector_store,
+    get_vector_store_info,
 )
 from core.exceptions.app_exception import AppException
 

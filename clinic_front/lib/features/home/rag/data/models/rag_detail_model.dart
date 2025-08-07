@@ -15,6 +15,10 @@ class RagDetailModel extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<FileModel>? files;
+  @JsonKey(name: 'document_count')
+  final int? documentCount;
+  @JsonKey(name: 'total_size_mb')
+  final double? totalSizeMb;
 
   const RagDetailModel({
     required this.id,
@@ -26,6 +30,8 @@ class RagDetailModel extends Equatable {
     required this.createdAt,
     required this.updatedAt,
     this.files,
+    this.documentCount,
+    this.totalSizeMb,
   });
 
   factory RagDetailModel.fromJson(Map<String, dynamic> json) =>
@@ -44,5 +50,7 @@ class RagDetailModel extends Equatable {
     createdAt,
     updatedAt,
     files,
+    documentCount,
+    totalSizeMb,
   ];
 }

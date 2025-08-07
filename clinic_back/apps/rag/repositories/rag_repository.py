@@ -1,5 +1,6 @@
 from apps.rag.models import Rag, RagFile
 from apps.rag.entities import RagEntity, RagFileEntity
+from apps.rag.infra.faiss_vector_store_manager import get_vector_store_info
 
 from typing import Optional, List, TYPE_CHECKING
 
@@ -62,11 +63,26 @@ class RagRepository:
                 )
                 for rf in rag_files
             ]
-            return RagRepository.to_entity(rag, files=file_entities)
+            
+            # 벡터스토어 정보 가져오기
+            vector_store_info = get_vector_store_info(str(id))
+            
+            return RagEntity(
+                id=rag.id,
+                user_id=rag.user_id,
+                name=rag.name,
+                description=rag.description,
+                status=rag.status,
+                vector_store=rag.vector_store,
+                last_indexed_at=rag.last_indexed_at,
+                created_at=rag.created_at,
+                updated_at=rag.updated_at,
+                files=file_entities,
+                document_count=vector_store_info["document_count"],
+                total_size_mb=vector_store_info["total_size_mb"],
+            )
         except Rag.DoesNotExist:
             return None
         except Exception as e:
             print(f"Error getting Rag by ID {id}: {e}")
             return None
-
-            print(e)

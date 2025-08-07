@@ -22,7 +22,7 @@ function TopHeader({ selectedLLM, setSelectedLLM, toggleRightSidebar, isRightSid
           onClick={toggleLeftSidebar}
           title="Toggle Left Sidebar"
         />
-        <span className="playground-text">Playground</span>
+        <span className="playground-text">Tox&Feel</span>
         <select
           value={selectedLLM}
           onChange={(e) => setSelectedLLM(e.target.value)}

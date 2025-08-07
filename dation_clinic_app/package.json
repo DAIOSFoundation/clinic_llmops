@@ -1,11 +1,11 @@
 {
-  "name": "dation_app",
+  "name": "toxfeel_app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "main": "main.cjs",
   "author": "Your Name <your.email@example.com>",
-  "description": "Dation MK Agent Desktop Application",
+  "description": "Tox&Feel Desktop Application",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -27,7 +27,7 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.4.1",
-    "electron": "^31.0.2",
+    "electron": "^31.7.7",
     "electron-builder": "^24.13.3",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -36,8 +36,8 @@
     "vite": "^5.3.0"
   },
   "build": {
-    "appId": "com.dation.mkagent",
-    "productName": "Dation MK Agent",
+    "appId": "com.toxfeel.app",
+    "productName": "Tox&Feel",
     "files": [
       "dist/**/*",
       "main.cjs",
@@ -50,7 +50,10 @@
     },
     "mac": {
       "hardenedRuntime": false,
-      "target": ["dmg", "zip"],
+      "target": [
+        "dmg",
+        "zip"
+      ],
       "icon": "public/dation_logo.icns",
       "identity": null
     },

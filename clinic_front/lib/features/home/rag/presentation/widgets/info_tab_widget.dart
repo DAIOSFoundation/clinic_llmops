@@ -39,6 +39,16 @@ class InfoTabWidget extends StatelessWidget {
                 contents: rag.vectorStore,
               ),
               SizedBox(height: AppSizes.appPadding / 2),
+              AppTitleContentsText(
+                title: 'Document Count',
+                contents: '${rag.documentCount ?? 0} documents',
+              ),
+              SizedBox(height: AppSizes.appPadding / 2),
+              AppTitleContentsText(
+                title: 'Total Size',
+                contents: '${rag.totalSizeMb?.toStringAsFixed(2) ?? '0.00'} MB',
+              ),
+              SizedBox(height: AppSizes.appPadding / 2),
               Text("Training Progress", style: AppTextStyles.title(context)),
               SizedBox(height: 4.0),
               Container(

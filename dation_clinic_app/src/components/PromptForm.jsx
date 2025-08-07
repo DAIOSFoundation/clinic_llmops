@@ -45,7 +45,7 @@ function PromptForm({ onSave, initialData = null }) {
           id="promptContent"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="e.g. 그릴리 햄을 제조하기 위한 원재료를 Bill of Materials 로 정리하는 프롬프트입니다."
+          placeholder="e.g. 피부과 상담을 위한 프롬프트입니다."
           required
         ></textarea>
       </div>
@@ -57,7 +57,7 @@ function PromptForm({ onSave, initialData = null }) {
           id="promptTitle"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="e.g. 그릴리 BOM 프롬프트"
+          placeholder="e.g. 피부과 상담 프롬프트"
           required
         />
       </div>
@@ -69,7 +69,7 @@ function PromptForm({ onSave, initialData = null }) {
           id="promptDescription"
           value={promptDescription}
           onChange={(e) => setPromptDescription(e.target.value)}
-          placeholder="e.g. 그릴리 햄 BOM 관련 정보를 요청하는 프롬프트"
+          placeholder="e.g. 피부과 상담 관련 정보를 요청하는 프롬프트"
           required
         />
       </div>

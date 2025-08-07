@@ -4,6 +4,7 @@ import './LeftSidebar.css';
 import MessageIcon from '../assets/Message.png';
 import ElementsIcon from '../assets/elements.png';
 import ReactIcon from '../assets/React.png';
+import SettingsIcon from '../assets/Settings.png';
 
 // savedSessions, onLoadSession, selectedSavedSessionId prop을 받습니다.
 function LeftSidebar({ isOpen, savedSessions, onLoadSession, selectedSavedSessionId, selectedMenu, setSelectedMenu }) {
@@ -30,6 +31,13 @@ function LeftSidebar({ isOpen, savedSessions, onLoadSession, selectedSavedSessio
         >
           <img src={ReactIcon} alt="Make Prompt" />
           <span>Make Prompt</span>
+        </div>
+        <div
+          className={`menu-item ${selectedMenu === 'RAG Settings' ? 'selected' : ''}`}
+          onClick={() => setSelectedMenu('RAG Settings')}
+        >
+          <img src={SettingsIcon} alt="RAG Settings" />
+          <span>RAG Settings</span>
         </div>
       </nav>
 

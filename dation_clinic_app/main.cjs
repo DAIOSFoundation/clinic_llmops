@@ -9,6 +9,7 @@ function createWindow() {
     height: 800,
     minWidth: 1000,
     minHeight: 600,
+    title: 'Tox&Feel',
     icon: path.join(__dirname, 'public', 'dation_logo.icns'), // 아이콘 설정
     show: false, // 초기에 창을 숨김 (로딩 완료 후 표시)
     webPreferences: {

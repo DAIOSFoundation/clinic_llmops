@@ -11,6 +11,8 @@ class RagDetailEntity extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<FileEntity>? files;
+  final int? documentCount;
+  final double? totalSizeMb;
 
   const RagDetailEntity({
     required this.id,
@@ -22,6 +24,8 @@ class RagDetailEntity extends Equatable {
     required this.createdAt,
     required this.updatedAt,
     this.files,
+    this.documentCount,
+    this.totalSizeMb,
   });
 
   @override
@@ -35,5 +39,7 @@ class RagDetailEntity extends Equatable {
     createdAt,
     updatedAt,
     files,
+    documentCount,
+    totalSizeMb,
   ];
 }

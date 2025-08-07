@@ -13,6 +13,8 @@ extension RagDetailModelToEntityMapper on RagDetailModel {
     createdAt: createdAt,
     updatedAt: updatedAt,
     lastIndexedAt: lastIndexedAt,
+    documentCount: documentCount,
+    totalSizeMb: totalSizeMb,
   );
 }
 
@@ -26,5 +28,7 @@ extension RagDetailEntityToModelMapper on RagDetailEntity {
     createdAt: createdAt,
     updatedAt: updatedAt,
     lastIndexedAt: lastIndexedAt,
+    documentCount: documentCount,
+    totalSizeMb: totalSizeMb,
   );
 }

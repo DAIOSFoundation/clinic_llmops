@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './InteractionPage.css';
 import { mockApi, fixedLayoutData } from '../api/mockApi';
-import { manufacturingMockApi, manufacturingLayoutData, manufacturingRecipientData } from '../api/manufacturingMockApi';
 import InputBox from './InputBox';
 import LightbulbIcon from '../assets/lightbulb.png';
 import { getGeminiIntent } from '../utils/geminiApi';
@@ -28,7 +27,7 @@ function InteractionPage({ addApiCallLog, clearSourceLogs, selectedLLM, onLlmExp
   // 1. lastUserInput 상태 추가
   const [lastUserInput, setLastUserInput] = useState('');
 
-  // 병원용과 제조용 fixedLayoutData의 question들을 Gemini가 이해할 수 있는 매핑으로 변환
+  // 병원용 fixedLayoutData의 question들을 Gemini가 이해할 수 있는 매핑으로 변환
   const geminiIntentKeywords = useMemo(() => {
     const keywords = {};
     
@@ -43,37 +42,28 @@ function InteractionPage({ addApiCallLog, clearSourceLogs, selectedLLM, onLlmExp
         }
     });
     
-    // 제조용 워크플로우
-    manufacturingLayoutData.forEach(step => {
-        if (step.question && step.question.length > 0) {
-            const intentKey = `MANUFACTURING_${step.process_name.replace(/ /g, '_').toUpperCase()}_${step.step_id}`;
-            keywords[intentKey] = step.question;
-        }
-    });
+
     
     return keywords;
   }, []);
 
-  // ID-Name 매핑 데이터를 위한 useMemo (병원용과 제조용 통합)
+  // ID-Name 매핑 데이터를 위한 useMemo
   const idToNameMaps = useMemo(() => {
     const patients = mockApi.getPatientDataForMapping();
     const products = mockApi.getProductDataForMapping();
     const leads = mockApi.getLeadDataForMapping();
     const hospitalRecipients = mockApi.getRecipientData();
-    const manufacturingRecipients = manufacturingRecipientData;
 
     const patientIdToName = new Map(patients.map(p => [p.patient_id, p.name]));
     const productIdToName = new Map(products.map(p => [p.product_id, p.name]));
     const leadIdToName = new Map(leads.map(l => [l.lead_id, l.name]));
     const hospitalRecipientEmailToName = new Map(hospitalRecipients.map(r => [r.이메일, r.이름]));
-    const manufacturingRecipientEmailToName = new Map(manufacturingRecipients.map(r => [r.이메일, r.이름]));
 
     return {
       patientIdToName,
       productIdToName,
       leadIdToName,
       hospitalRecipientEmailToName,
-      manufacturingRecipientEmailToName,
     };
   }, []); // 의존성 배열 비워두어 컴포넌트 마운트 시 한 번만 계산
 
@@ -201,7 +191,7 @@ function InteractionPage({ addApiCallLog, clearSourceLogs, selectedLLM, onLlmExp
   const renderData = useCallback((data) => {
     if (!Array.isArray(data) || data.length === 0) return null;
 
-    // 2차원 배열인지 확인 (BOM, SOP 데이터)
+    // 2차원 배열인지 확인
     const is2DArray = Array.isArray(data[0]) && data[0].length > 0;
     
     if (is2DArray) {
@@ -209,7 +199,7 @@ function InteractionPage({ addApiCallLog, clearSourceLogs, selectedLLM, onLlmExp
       return <TableRenderer data={data} header={null} />;
     }
 
-    const { patientIdToName, productIdToName, leadIdToName, hospitalRecipientEmailToName, manufacturingRecipientEmailToName } = idToNameMaps;
+    const { patientIdToName, productIdToName, leadIdToName, hospitalRecipientEmailToName } = idToNameMaps;
 
     // 원본 데이터의 첫 번째 객체에서 헤더를 먼저 추출
     let originalHeader = typeof data[0] === 'object' && data[0] !== null ? Object.keys(data[0]) : [];
@@ -232,12 +222,10 @@ function InteractionPage({ addApiCallLog, clearSourceLogs, selectedLLM, onLlmExp
           }
           // 추가적인 ID-Name 매핑이 필요하다면 여기에 else if 추가
         } else if (key === 'recipient_email') {
-            // 병원용과 제조용 수신자 모두 확인
-            if (hospitalRecipientEmailToName.has(newRow[key])) {
-                newRow['recipient_name'] = hospitalRecipientEmailToName.get(newRow[key]);
-            } else if (manufacturingRecipientEmailToName.has(newRow[key])) {
-                newRow['recipient_name'] = manufacturingRecipientEmailToName.get(newRow[key]);
-            }
+                // 병원용 수신자 확인
+    if (hospitalRecipientEmailToName.has(newRow[key])) {
+      newRow['recipient_name'] = hospitalRecipientEmailToName.get(newRow[key]);
+    }
         }
       }
       return newRow;
@@ -368,14 +356,9 @@ function InteractionPage({ addApiCallLog, clearSourceLogs, selectedLLM, onLlmExp
               case 'products': apiResponse = await mockApi.getProducts(); break;
               case 'surveys': apiResponse = await mockApi.getSurveys(); break;
               case 'leads': apiResponse = await mockApi.getLeads(); break;
-              case 'bom': apiResponse = await manufacturingMockApi.getBom(); break;
-              case 'sop': apiResponse = await manufacturingMockApi.getSop(); break;
+              
               case 'callback':
-                if (step.step_id === 701) { 
-                  apiResponse = await manufacturingMockApi.getCallback();
-                } else {
-                  apiResponse = await mockApi.getCallback();
-                }
+                apiResponse = await mockApi.getCallback();
                 addApiCallLog('API', '콜백 수신 완료.');
                 break;
               default: throw new Error(`Unsupported GET API: ${urlPath}`);
@@ -399,12 +382,7 @@ function InteractionPage({ addApiCallLog, clearSourceLogs, selectedLLM, onLlmExp
                   try {
                     addApiCallLog('API', 'Agent 가 파악한 API 를 호출합니다.');
                     let json;
-                    // Check if the step belongs to the manufacturing workflow
-                    if (step.step_id === 701) { 
-                      json = await manufacturingMockApi.postSend(formData);
-                    } else {
-                      json = await mockApi.postSend(formData);
-                    }
+                    json = await mockApi.postSend(formData);
                     setInteractionChatHistory((prev) => [...prev, { role: 'model', content: `POST 요청 완료: ${json.message || '응답 메시지 없음'}` }]);
                     const nextStepConfig = step.next_step && step.next_step.length > 0 ? step.next_step[0] : null;
                     if (nextStepConfig && nextStepConfig.step_id !== null) {
@@ -550,14 +528,6 @@ function InteractionPage({ addApiCallLog, clearSourceLogs, selectedLLM, onLlmExp
                         llmResponseExplanation = "죄송합니다. LLM이 요청을 이해했지만, 해당 워크플로우 스텝을 찾을 수 없습니다.";
                     }
                 }
-            } else if (matchedIntentKey.startsWith("MANUFACTURING_")) {
-                selectedLayoutData = manufacturingLayoutData;
-                initialStep = manufacturingLayoutData.find(s => s.step_id === stepIdFromIntent);
-                if (initialStep) {
-                    llmResponseExplanation = initialStep.answer[0];
-                } else {
-                    llmResponseExplanation = "죄송합니다. LLM이 요청을 이해했지만, 해당 제조 워크플로우 스텝을 찾을 수 없습니다.";
-                }
             }
         } else {
             llmResponseExplanation = "죄송합니다. 요청하신 내용을 이해하지 못했습니다. 다른 방식으로 질문해 주시겠어요.";
@@ -663,113 +633,13 @@ const TableRenderer = ({ data, header }) => {
     return <p className="no-data-message">표시할 데이터가 없거나 형식이 올바르지 않습니다.</p>;
   }
 
-  // SOP 데이터인지 판별 (두 번째 행에 '비고'가 2개)
-  const isSopTable = Array.isArray(data[0]) && data[1] && Array.isArray(data[1]) && data[1].filter(x => x === "비고").length === 2;
 
-  if (isSopTable) {
-    // SopManager 컴포넌트 정의 (내부)
-    const SopManager = ({ initialSopData }) => {
-      const STORAGE_KEY = "sopRows";
-      // localStorage에서 불러오기, 없으면 initialSopData 사용
-      const getInitialRows = () => {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          try { return JSON.parse(saved); } catch { return initialSopData.slice(2); }
-        }
-        return initialSopData.slice(2);
-      };
-      const [sopRows, setSopRows] = React.useState(getInitialRows);
 
-      // sopRows가 바뀔 때마다 localStorage에 저장
-      React.useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(sopRows));
-      }, [sopRows]);
-
-      const [form, setForm] = React.useState({ 단계: '', 항목: '', 방법: '', 방법상세: '', 기준: '', sop: '', 비고: '' });
-      const [editIdx, setEditIdx] = React.useState(null);
-
-      // 입력 변경 핸들러
-      const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
-
-      // 추가/수정
-      const handleSubmit = e => {
-        e.preventDefault();
-        if (editIdx === null) {
-          setSopRows([...sopRows, Object.values(form)]);
-        } else {
-          setSopRows(sopRows.map((row, idx) => idx === editIdx ? Object.values(form) : row));
-          setEditIdx(null);
-        }
-        setForm({ 단계: '', 항목: '', 방법: '', 방법상세: '', 기준: '', sop: '', 비고: '' });
-      };
-
-      // 행 클릭(수정)
-      const handleRowClick = idx => {
-        setEditIdx(idx);
-        const [단계, 항목, 방법, 방법상세, 기준, sop, 비고] = sopRows[idx];
-        setForm({ 단계, 항목, 방법, 방법상세, 기준, sop, 비고 });
-      };
-
-      // 삭제
-      const handleDelete = idx => setSopRows(sopRows.filter((_, i) => i !== idx));
-
-      const fixedHeader = [
-        "검사 단계", "검사 항목", "검사 방법", "검사 방법 상세", "합격 기준", "관련 SOP", "비고"
-      ];
-      const sopNoRow = initialSopData[0];
-
-      return (
-        <div style={{ width: '100%' }}>
-          <form onSubmit={handleSubmit} className="sop-form-row">
-            {["단계", "항목", "방법", "방법상세", "기준", "sop", "비고"].map((key, i) => (
-              <input
-                key={key}
-                name={key}
-                value={form[key]}
-                onChange={handleChange}
-                placeholder={["검사 단계", "검사 항목", "검사 방법", "검사 방법 상세", "합격 기준", "관련 SOP", "비고"][i]}
-              />
-            ))}
-            <button type="submit">{editIdx === null ? "추가" : "수정"}</button>
-            {editIdx !== null && <button type="button" onClick={() => { setEditIdx(null); setForm({ 단계: '', 항목: '', 방법: '', 방법상세: '', 기준: '', sop: '', 비고: '' }); }}>취소</button>}
-          </form>
-          <div className="table-wrapper">
-            <table className="styled-table">
-              <thead>
-                <tr>
-                  <th colSpan={fixedHeader.length + 1} style={{ textAlign: "left" }}>
-                    {sopNoRow[0]}: <strong>{sopNoRow[1]}</strong>
-                  </th>
-                </tr>
-                <tr>
-                  {fixedHeader.map((item, idx) => (
-                    <th key={idx}>{item}</th>
-                  ))}
-                  <th>삭제</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sopRows.map((row, idx) => (
-                  <tr key={idx} onClick={() => handleRowClick(idx)} style={{ background: editIdx === idx ? '#eef' : undefined }}>
-                    {row.map((cell, i) => <td key={i}>{cell}</td>)}
-                    <td><button onClick={e => { e.stopPropagation(); handleDelete(idx); }}>삭제</button></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      );
-    };
-    // SopManager 렌더링
-    return <SopManager initialSopData={data} />;
-  }
-
-  // 2차원 배열인지 확인 (BOM, SOP 데이터)
+  // 2차원 배열인지 확인
   const is2DArray = Array.isArray(data[0]) && data[0].length > 0;
   
   if (is2DArray) {
-    // 2차원 배열 처리 (BOM, SOP 데이터)
+    // 2차원 배열 처리
     const tableHeader = data[0]; // 첫 번째 행이 헤더
     const tableData = data.slice(1); // 나머지 행이 데이터
     
@@ -938,10 +808,9 @@ const RecipientSearchInput = ({ id, name, value, onSelectRecipient, addApiCallLo
 
   useEffect(() => {
     if (value) {
-        // 병원용과 제조용 수신자 모두 확인
+        // 병원용 수신자 확인
         const hospitalSelected = (mockApi.getRecipientData() || []).find(r => r.이메일 === value);
-        const manufacturingSelected = (manufacturingRecipientData || []).find(r => r.이메일 === value);
-        const selected = hospitalSelected || manufacturingSelected;
+        const selected = hospitalSelected;
         
         if (selected) {
             setSelectedRecipientName(`${selected.이름} (${selected.이메일})`);
@@ -970,19 +839,12 @@ const RecipientSearchInput = ({ id, name, value, onSelectRecipient, addApiCallLo
     searchTimeoutRef.current = setTimeout(async () => {
       try {
         addApiCallLog('LLM', `수신자 검색 LLM 이 '${searchTerm}' 에 대한 의미를 분석 중입니다.`);
-        // 병원용과 제조용 수신자 검색 모두 시도
-        const hospitalResponse = await mockApi.searchRecipients(searchTerm);
-        const manufacturingResponse = await manufacturingMockApi.searchRecipients(searchTerm);
+        // 수신자 검색
+        const response = await mockApi.searchRecipients(searchTerm);
         
-        // 두 결과를 합쳐서 정렬
-        const allResults = [...(hospitalResponse.data || []), ...(manufacturingResponse.data || [])];
-        const uniqueResults = allResults.filter((item, index, self) => 
-          index === self.findIndex(t => t.이메일 === item.이메일)
-        );
-        
-        if (hospitalResponse.success || manufacturingResponse.success) {
-          setSearchResults(uniqueResults.slice(0, 5)); // 상위 5개만 표시
-          addApiCallLog('Gemma', `LLM 의미 검색 완료: ${uniqueResults.length}명`);
+        if (response.success) {
+          setSearchResults(response.data.slice(0, 5)); // 상위 5개만 표시
+          addApiCallLog('Gemma', `LLM 의미 검색 완료: ${response.data.length}명`);
         } else {
           setSearchResults([]);
           addApiCallLog('Gemma', `LLM 의미 검색 실패`);

@@ -103,6 +103,52 @@ const recipientData = [
     "이메일": "sungjin.moon@hospital.com",
     "전화번호": "+82-2-1111-1234",
     "근무장소": "본관 5층 총무팀"
+  },
+  // 피부과 관련 추가 수신자
+  {
+    "이름": "김민준",
+    "부서": "피부과",
+    "직책": "과장",
+    "소속": "의료진",
+    "이메일": "minjun.kim@toxnfill.com",
+    "전화번호": "+82-2-1234-5678",
+    "근무장소": "피부과 진료실"
+  },
+  {
+    "이름": "이서연",
+    "부서": "피부과",
+    "직책": "의사",
+    "소속": "의료진",
+    "이메일": "seoyeon.lee@toxnfill.com",
+    "전화번호": "+82-2-2345-6789",
+    "근무장소": "피부과 진료실"
+  },
+  {
+    "이름": "박지훈",
+    "부서": "피부과",
+    "직책": "전문의",
+    "소속": "의료진",
+    "이메일": "jihoon.park@toxnfill.com",
+    "전화번호": "+82-2-3456-7890",
+    "근무장소": "피부과 진료실"
+  },
+  {
+    "이름": "최수아",
+    "부서": "피부과",
+    "직책": "간호사",
+    "소속": "간호부",
+    "이메일": "sua.choi@toxnfill.com",
+    "전화번호": "+82-2-4567-8901",
+    "근무장소": "피부과 간호실"
+  },
+  {
+    "이름": "정우진",
+    "부서": "피부과",
+    "직책": "원무과장",
+    "소속": "행정팀",
+    "이메일": "woojin.jung@toxnfill.com",
+    "전화번호": "+82-2-5678-9012",
+    "근무장소": "피부과 원무실"
   }
 ];
 
@@ -212,118 +258,6 @@ export const fixedLayoutData = [
       "parameters": []
     },
     "next_step": [{ "step_id": 800 }] // Changed to explicit object for consistency
-  },
-  {
-    "step_id": 500, // Product Information
-    "process_name": "제품 정보 조회",
-    "description": "판매 중인 제품의 정보(제품 ID, 이름, 카테고리, 가격, 재고, 권장 사용법)를 조회합니다.",
-    "question": [
-      "제품 정보", "제품 가격", "재생크림 A", "흉터연고 C", "제품 목록", "제품 정보 보여줘"
-    ],
-    "answer": [
-      "제품 정보를 조회합니다. 특정 제품 ID나 제품명을 알려주시거나, 전체 제품 목록을 보시겠어요?"
-    ],
-    "data": null,
-    "api": {
-      "url": "/api/products",
-      "method": "GET",
-      "parameters": []
-    },
-    "next_step": [{ "step_id": 900 }] // Changed to explicit object for consistency
-  },
-  {
-    "step_id": 600, // Survey Results
-    "process_name": "설문조사 결과 조회",
-    "description": "환자 만족도 설문조사 결과(설문 ID, 환자 ID, 발송일, 평점, 코멘트)를 조회합니다.",
-    "question": [
-      "설문 결과", "환자 만족도", "SV601 설문", "설문 목록",
-      "박민지 환자 설문 결과", "설문 결과 보여줘"
-    ],
-    "answer": [
-      "설문조사 결과를 조회합니다. 특정 설문 ID나 환자 ID를 알려주시거나, 전체 설문 목록을 보시겠어요?"
-    ],
-    "data": null,
-    "api": {
-      "url": "/api/surveys",
-      "method": "GET",
-      "parameters": []
-    },
-    "next_step": [{ "step_id": 900 }] // Changed to explicit object for consistency
-  },
-  {
-    "step_id": 700, // CRM Leads
-    "process_name": "CRM 리드 정보 조회",
-    "description": "잠재 고객(리드)의 정보(리드 ID, 이름, 채널, 연락 방법, 상태, 생성일, 선호 시술, 비고)를 조회합니다.",
-    "question": [
-      "리드 정보", "잠재 고객", "L001 리드", "리드 목록",
-      "박민지 리드 정보", "리드 정보 보여줘"
-    ],
-    "answer": [
-      "CRM 리드 정보를 조회합니다. 특정 리드 ID를 알려주시거나, 전체 리드 목록을 보시겠어요?"
-    ],
-    "data": null,
-    "api": {
-      "url": "/api/leads",
-      "method": "GET",
-      "parameters": []
-    },
-    "next_step": [{ "step_id": 900 }] // Changed to explicit object for consistency
-  },
-  {
-    "step_id": 750, // Equipment Control
-    "process_name": "장비 제어",
-    "description": "병원 장비의 수동 제어 및 모니터링을 위한 시스템에 접근합니다.",
-    "question": [
-      "장비 제어", "장비 모니터링", "장비 상태", "장비 관리", "수동 제어", "장비 제어 시스템",
-      "장비 제어 페이지", "장비 제어 시스템 접속", "장비 상태 확인", "장비 제어 패널"
-    ],
-    "answer": [
-      "장비 제어 시스템에 접속합니다. 장비의 상태를 확인하고 수동으로 제어할 수 있습니다."
-    ],
-    "data": null,
-    "api": {
-      "url": "http://localhost:3000/manual-override",
-      "method": "GET",
-      "parameters": []
-    },
-    "next_step": [{ "step_id": 900 }] // Changed to explicit object for consistency
-  },
-  {
-    "step_id": 760, // Production Monitoring
-    "process_name": "생산 모니터링",
-    "description": "병원 운영 및 생산성 모니터링을 위한 MES/PLM 시스템에 접근합니다.",
-    "question": [
-      "생산 모니터링", "생산 현황", "MES 시스템", "PLM 시스템", "생산성 모니터링", "운영 모니터링", "생산 관리",
-      "MES PLM", "생산 모니터링 시스템", "운영 효율성", "생산성 분석", "MES PLM 시스템", "현황 모니터링"
-    ],
-    "answer": [
-      "생산 모니터링 시스템(MES/PLM)에 접속합니다. 병원 운영 효율성과 생산성을 분석할 수 있습니다."
-    ],
-    "data": null,
-    "api": {
-      "url": "http://localhost:3000/mes-plm",
-      "method": "GET",
-      "parameters": []
-    },
-    "next_step": [{ "step_id": 900 }] // Changed to explicit object for consistency
-  },
-  {
-    "step_id": 761,
-    "process_name": '모니터링 대시보드',
-    "description": 'MES/MOM 시스템의 메인 대시보드를 확인합니다.',
-    "question": [
-      '모니터링 대시보드', '대시보드', '메인 대시보드', '생산 대시보드', '모니터링 화면', 'MES 대시보드', 'MOM 대시보드', '공장 대시보드', '공정 대시보드', '운영 대시보드', '대시보드 열어줘', '대시보드 보여줘'
-    ],
-    "answer": [
-      'MES/MOM 시스템의 메인 대시보드를 표시합니다.'
-    ],
-    "data": null,
-    "api": {
-      "url": 'http://localhost:3000/',
-      "method": 'GET',
-      "parameters": []
-    },
-    "next_step": [{ step_id: 900 }]
   },
   {
     "step_id": 800, // Generic Send Information (e.g., consent forms, notices)
@@ -561,6 +495,8 @@ export const mockApi = {
             }, 500);
         });
     },
+
+
 
     postSend: async (formData) => {
         return new Promise(resolve => {

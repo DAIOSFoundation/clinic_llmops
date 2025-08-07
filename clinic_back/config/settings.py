@@ -9,6 +9,21 @@ TIME_ZONE = "UTC"
 DEFAULT_CHARSET = "utf-8"
 DEBUG = False
 
+# 언어 및 인코딩 설정
+LANGUAGE_CODE = "ko-kr"
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
+# 파일 업로드 인코딩
+FILE_UPLOAD_ENCODING = "utf-8"
+
+# 한글 URL 처리 설정
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# WSGI 서버 설정
+WSGI_APPLICATION = "config.wsgi.application"
+
 ALLOWED_HOSTS = ["*"]
 
 

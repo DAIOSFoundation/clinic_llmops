@@ -8,87 +8,148 @@ import rehypeRaw from 'rehype-raw'; // HTML 렌더링 지원 (필요시)
 import { getGeminiTextResponse } from '../utils/geminiApi'; // 변경된 함수 임포트
 import { calculateSimilarity } from '../utils/textSimilarity'; // NEW: 유사도 계산 함수 임포트
 import PromptExamplesPopup from './PromptExamplesPopup'; // 팝업 컴포넌트 임포트
+import { loadRagApis, findBestMatchingRagApi, initializeDefaultRagApis } from '../utils/ragApiManager'; // RAG API 관리 함수 임포트
 
 // Define API constants for RAG
-//const BASE_RAG_API_PATH = '/api/v1/rag/retrievers/food'; // The actual path on the banya.ai server
-const BASE_RAG_API_PATH = '/api/v1/rags/retriever/2c8d64af-77a0-4abc-949b-06e6f594d17c';
 const API_PROXY_PREFIX = '/api'; // The proxy prefix defined in vite.config.js
 
-// getCategoryAndRagContext 함수를 RAG 우선 로직으로 변경
+// getCategoryAndRagContext 함수를 설정된 RAG API를 사용하도록 변경
 async function getCategoryAndRagContext(question, addApiCallLog) {
   const SIMILARITY_THRESHOLD = 0.8; // 유사도 임계값
-  const encodedQuestion = encodeURIComponent(question);
 
-  // 1. RAG API URL 정의
-  const foodRagUrl = `https://api.banya.ai/api/v1/rags/retriever/food?question=${encodedQuestion}`;
-  let skinRagUrl;
-  if (import.meta.env.DEV) {
-    skinRagUrl = `${API_PROXY_PREFIX}${BASE_RAG_API_PATH}?question=${encodedQuestion}`;
-  } else {
-    skinRagUrl = `https://api.banya.ai${BASE_RAG_API_PATH}?question=${encodedQuestion}`;
+  // 1. 설정된 RAG API 목록 로드
+  const ragApis = loadRagApis();
+  console.log('MainContent에서 로드된 RAG API:', ragApis);
+  console.log('localStorage ragApis:', localStorage.getItem('ragApis'));
+  
+  if (ragApis.length === 0) {
+    addApiCallLog('API', '설정된 RAG API가 없습니다.');
+    console.log('RAG API가 없어서 기본값 반환');
+    return { category: '기타', ragContext: null };
   }
 
-  addApiCallLog('API', '카테고리 분석을 위해 RAG API 동시 호출 중...');
+  addApiCallLog('API', `${ragApis.length}개의 RAG API로 카테고리 분석 중...`);
+  addApiCallLog('Query', `질문: ${question}`);
+  console.log('설정된 RAG API 목록:', ragApis);
+  console.log('원본 질문:', question);
 
-  // 2. RAG API 병렬 호출
-  const [foodResponse, skinResponse] = await Promise.all([
-    fetch(foodRagUrl).then(res => res.json()).catch(() => null),
-    fetch(skinRagUrl).then(res => res.json()).catch(() => null)
-  ]);
+  // 2. 설정된 RAG API들 병렬 호출
+  const ragApiPromises = ragApis.map(async (api) => {
+    try {
+      let apiUrl = api.url;
+      
+      // 개발 환경에서 localhost URL을 프록시를 통해 호출
+      if (import.meta.env.DEV && apiUrl.includes('localhost:8000')) {
+        apiUrl = apiUrl.replace('http://localhost:8000', API_PROXY_PREFIX);
+      }
+      
+      // URL 검증 및 수정
+      console.log('처리 전 API URL:', apiUrl);
+      
+      // 상대 URL인 경우 절대 URL로 변환
+      if (apiUrl.startsWith('/')) {
+        apiUrl = `${window.location.origin}${apiUrl}`;
+      }
+      
+      console.log('처리 후 API URL:', apiUrl);
+      
+      // 한국어 인코딩 개선: URLSearchParams 사용
+      const url = new URL(apiUrl);
+      url.searchParams.set('question', question); // 원본 질문 그대로 전달
+      
+      console.log(`RAG API 호출 URL: ${url.toString()}`);
+      const response = await fetch(url.toString());
+      
+      // HTTP 상태 코드 확인
+      if (!response.ok) {
+        console.error(`RAG API 호출 실패 (${api.name}): HTTP ${response.status} ${response.statusText}`);
+        return { api, data: null, success: false, error: `HTTP ${response.status}` };
+      }
+      
+      // 응답이 비어있는지 확인
+      const responseText = await response.text();
+      if (!responseText || responseText.trim() === '') {
+        console.error(`RAG API 호출 실패 (${api.name}): 빈 응답`);
+        return { api, data: null, success: false, error: '빈 응답' };
+      }
+      
+      // JSON 파싱
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error(`RAG API JSON 파싱 실패 (${api.name}):`, parseError, 'Response:', responseText);
+        return { api, data: null, success: false, error: 'JSON 파싱 실패' };
+      }
+      
+      addApiCallLog('RAG', `✅ ${api.name} API 호출 성공`, 0, `카테고리: ${api.category}`);
+      return { api, data, success: true };
+    } catch (error) {
+      console.error(`RAG API 호출 실패 (${api.name}):`, error);
+      addApiCallLog('RAG', `❌ ${api.name} API 호출 실패`, 0, `오류: ${error.message}`);
+      return { api, data: null, success: false, error: error.message };
+    }
+  });
+
+  const ragApiResults = await Promise.all(ragApiPromises);
+  console.log('RAG API 호출 결과:', ragApiResults);
 
   // 3. 최대 유사도 추출 함수
   const getMaxSimilarity = (data) => {
     if (!data?.data?.documents?.length) return 0;
-    return Math.max(...data.data.documents.map(doc => doc.similarity || 0));
+    return Math.max(...data.data.documents.map(doc => doc.score || 0));
   };
 
-  const maxFoodSim = getMaxSimilarity(foodResponse);
-  const maxSkinSim = getMaxSimilarity(skinResponse);
+  // 4. 성공한 API 중에서 최고 유사도 찾기
+  const successfulResults = ragApiResults.filter(result => result.success);
+  let bestResult = null;
+  let maxSimilarity = 0;
+
+  successfulResults.forEach(result => {
+    const similarity = getMaxSimilarity(result.data);
+    if (similarity > maxSimilarity) {
+      maxSimilarity = similarity;
+      bestResult = result;
+    }
+  });
 
   let category = '기타';
   let ragContext = null;
-  let ragData = null; // 선택된 카테고리의 RAG 데이터 저장
+  let ragData = null;
 
-  // 4. 유사도 기반 카테고리 결정
-  if (maxFoodSim >= SIMILARITY_THRESHOLD || maxSkinSim >= SIMILARITY_THRESHOLD) {
-    if (maxFoodSim >= maxSkinSim) {
-      category = '식품';
-      ragData = foodResponse;
-    } else {
-      category = '피부과';
-      ragData = skinResponse;
-    }
-    addApiCallLog('category', `RAG 유사도 기반 카테고리 분석: ${category} (유사도: ${Math.max(maxFoodSim, maxSkinSim).toFixed(2)})`);
+  // 5. 유사도 기반 카테고리 결정
+  if (maxSimilarity >= SIMILARITY_THRESHOLD && bestResult) {
+    category = bestResult.api.category || '기타';
+    ragData = bestResult.data;
+    addApiCallLog('Result', `🎯 최종 카테고리: ${category}`, maxSimilarity, `${bestResult.api.name} (유사도: ${maxSimilarity.toFixed(2)})`);
   } else {
-    // 5. Gemini API로 폴백
-    addApiCallLog('LLM', 'RAG 유사도가 낮아 LLM으로 카테고리 분석 중...');
-    const prompt = `아래 질문이 '식품', '피부과', '기타' 중 어떤 카테고리에 더 가까운지 한 단어로만 답하세요.\n질문: ${question}`;
-    try {
-      const response = await getGeminiTextResponse(prompt);
-      const answer = response?.text?.trim();
-      if (answer?.includes('식품')) {
-        category = '식품';
-        ragData = foodResponse; // 기존에 호출한 데이터 재사용
-      } else if (answer?.includes('피부과')) {
-        category = '피부과';
-        ragData = skinResponse; // 기존에 호출한 데이터 재사용
-      } else {
-        category = '기타';
+    // 6. 키워드 기반 매칭으로 폴백
+    const bestMatchingApi = findBestMatchingRagApi(question);
+    if (bestMatchingApi) {
+      category = bestMatchingApi.category || '기타';
+      // 이미 호출한 결과에서 찾기
+      const matchingResult = ragApiResults.find(result => result.api.id === bestMatchingApi.id);
+      if (matchingResult && matchingResult.success) {
+        ragData = matchingResult.data;
       }
-    } catch (e) {
-      category = '기타'; // 에러 발생 시 기본값
+      addApiCallLog('Result', `🔍 키워드 기반 카테고리: ${category}`, 0, `${bestMatchingApi.name}`);
+    } else {
+      addApiCallLog('Result', `⚠️ 카테고리 분석 실패`, 0, '기본값 사용');
     }
-    addApiCallLog('category', `LLM 기반 카테고리 분석 결과: ${category}`);
   }
 
-  // 6. 컨텍스트 추출 및 출처 로그 기록
+  // 7. 컨텍스트 추출 및 출처 로그 기록
   if (ragData?.data?.documents?.length > 0) {
     ragContext = ragData.data.documents.map(doc => doc.page_content).join('\n\n---\n\n');
-    ragData.data.documents.forEach(doc => {
+    addApiCallLog('Context', `📄 ${ragData.data.documents.length}개 문서 추출 완료`, 0, `총 ${ragContext.length}자`);
+    
+    ragData.data.documents.forEach((doc, index) => {
       if (doc.metadata?.source) {
-        addApiCallLog('Source', '', doc.similarity, `🧇 출처: ${doc.metadata.source}`, doc.page_content, doc.metadata.file_url);
+        addApiCallLog('Source', `📎 문서 ${index + 1}`, doc.score, `출처: ${doc.metadata.source}`, doc.page_content, doc.metadata.file_url);
       }
     });
+  } else {
+    addApiCallLog('Context', `⚠️ 관련 문서 없음`, 0, '컨텍스트 없음');
   }
   
   return { category, ragContext };
@@ -104,6 +165,20 @@ function MainContent({ chatHistory, setChatHistory, currentPromptInput, setCurre
   // 팝업 상태 추가
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupPrompt, setPopupPrompt] = useState(null);
+
+  // RAG API 초기화
+  useEffect(() => {
+    console.log('MainContent 마운트 - RAG API 초기화 시작');
+    const apis = loadRagApis();
+    console.log('MainContent에서 로드된 RAG API:', apis);
+    
+    if (apis.length === 0) {
+      console.log('MainContent에서 기본 RAG API 초기화');
+      initializeDefaultRagApis();
+    } else {
+      console.log('설정된 RAG API 사용:', apis);
+    }
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -192,7 +267,7 @@ function MainContent({ chatHistory, setChatHistory, currentPromptInput, setCurre
       // updateApiCallLog(llmLogId, 'fading-out', 'LLM이 응답을 생성했습니다.'); 
       setLastLlmOutput(geminiResponse.text); // NEW: 최종 LLM 응답을 App.jsx로 전달
       // 시뮬레이션된 출처 로그 추가 (기존 시뮬레이션은 RAG에서 처리되므로 제거)
-      // addApiCallLog('Source', '🧇 검색 출처: 사내 위키 "그릴리 제품군 BOM 정보"');
+      
       // addApiCallLog('Source', '🧇 답변 출처: "2024년 1월 생산 보고서"');
 
     } catch (error) {
@@ -225,8 +300,20 @@ function MainContent({ chatHistory, setChatHistory, currentPromptInput, setCurre
   //   return prompt;
   // });
 
-  // '식당 예약'이 포함된 프롬프트를 제거하고, '톡스앤필 상담' 프롬프트를 추가
-  const filteredPrompts = promptsTemplates.filter(prompt => !(prompt.title && prompt.title.includes('식당 예약')));
+  // 제거할 프롬프트 목록
+  const promptsToRemove = [
+    '식당 예약',
+    '생산 장비 제어',
+    'MES/PLM 조회 가이드'
+  ];
+  
+  // 제거할 프롬프트들을 필터링하고, '톡스앤필 상담' 프롬프트를 추가
+  const filteredPrompts = promptsTemplates.filter(prompt => 
+    !promptsToRemove.some(removeTitle => 
+      prompt.title && prompt.title.includes(removeTitle)
+    )
+  );
+  
   const toksnfillPrompt = {
     id: 'toksnfill-consult',
     title: '톡스앤필 상담',

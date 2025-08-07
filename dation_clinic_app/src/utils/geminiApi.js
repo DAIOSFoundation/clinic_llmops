@@ -37,7 +37,7 @@ async function fileToGenerativePart(file) {
  * Gemini API를 호출하여 사용자 입력과 제공된 의도 매핑을 기반으로 가장 유사한 의도를 식별합니다.
  * 또한, 특정 의도와 관련된 엔티티(예: 환자 이름)를 추출합니다.
  * @param {string} userMessage - 사용자의 입력 메시지
- * @param {Object} intentMapping - 의도 키와 해당 질문 목록을 포함하는 객체 (예: {"BOM_STEP_0": ["그릴리 BOM 확인"]})
+ * @param {Object} intentMapping - 의도 키와 해당 질문 목록을 포함하는 객체 (예: {"CONSULT_STEP_0": ["피부과 상담 확인"]})
  * @returns {Promise<{matched_intent: string, extracted_entities?: Object}>} - 식별된 의도 키와 추출된 엔티티 객체
  */
 export const getGeminiIntent = async (userMessage, intentMapping) => {

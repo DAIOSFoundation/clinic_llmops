@@ -11,6 +11,8 @@ class RagSerializer(serializers.ModelSerializer):
 
 class RagFilesSerializer(serializers.ModelSerializer):
     files = serializers.SerializerMethodField()
+    document_count = serializers.SerializerMethodField()
+    total_size_mb = serializers.SerializerMethodField()
 
     class Meta:
         model = Rag
@@ -19,6 +21,12 @@ class RagFilesSerializer(serializers.ModelSerializer):
     def get_files(self, obj):
         rag_files = RagFile.objects.filter(rag_id=obj.id)
         return RagFileSerializer(rag_files, many=True).data
+    
+    def get_document_count(self, obj):
+        return getattr(obj, 'document_count', 0)
+    
+    def get_total_size_mb(self, obj):
+        return getattr(obj, 'total_size_mb', 0.0)
 
 
 class RagCreateSerializer(serializers.Serializer):

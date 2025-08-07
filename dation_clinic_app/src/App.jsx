@@ -7,6 +7,7 @@ import MainContent from './components/MainContent';
 import RightSidebar from './components/RightSidebar';
 import InteractionPage from './components/InteractionPage';
 import MakePromptsPage from './components/MakePromptsPage';
+import RagSettingsPage from './components/RagSettingsPage';
 import { mockApi } from './api/mockApi';
 
 // 날짜를 동적으로 생성하는 헬퍼 함수
@@ -54,6 +55,11 @@ function App() {
       }
     };
     loadSessions();
+  }, []);
+
+  // 앱 title 설정
+  useEffect(() => {
+    document.title = 'Tox&Feel';
   }, []);
 
   // API 호출 로그를 추가하는 함수 (로그 ID 반환)
@@ -213,15 +219,7 @@ function App() {
 
 
   const promptsTemplates = useMemo(() => ([
-    {
-      id: 'bom-info',
-      title: '그릴리 제품 군의 원재료 구성',
-      description: '그릴리 제품 군의 BOM(원자재 명세서)을 확인하고, 특정 원재료의 사용 여부를 질문할 수 있습니다.',
-      example: '그릴리 BOM 보여줘\n그릴리 SOP 보여줘\nSOP 전송해줘',
-      category: 'Interaction',
-      author: 'Admin',
-      date: getRandomDate(),
-    },
+
     {
       id: 'toksnfill-work-guide',
       title: '톡스앤필 업무 가이드',
@@ -231,15 +229,7 @@ function App() {
       author: 'System',
       date: getRandomDate(),
     },
-    {
-      id: 'food-news-guide',
-      title: '식품 제조 뉴스 가이드',
-      description: '최신 식품 뉴스, 시장 트렌드, 신제품 정보 등을 얻을 수 있습니다.',
-      example: '최근 식품 시장 트렌드는?\n최근 허니버터칩을 출시한 식품회사는?\n동원식품 그릴리에 대해서 설명해줘\n교촌 치킨이 최근 출시한 메뉴는?',
-      category: 'General',
-      author: 'System',
-      date: getRandomDate(),
-    },
+
     {
       id: 'image-analysis-guide',
       title: '이미지 분석 가이드',
@@ -331,6 +321,12 @@ function App() {
           <>
             {/* {console.log('App: MakePromptsPage component selected for rendering.')} */}
             <MakePromptsPage />
+          </>
+        )}
+        {selectedMenu === 'RAG Settings' && (
+          <>
+            {/* {console.log('App: RagSettingsPage component selected for rendering.')} */}
+            <RagSettingsPage />
           </>
         )}
       </div>

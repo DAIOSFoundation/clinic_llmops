@@ -10,24 +10,13 @@ import PersonIcon from '../assets/person.png'; // 인물 아이콘 사용
 function MakePromptsPage() {
   // Mock 데이터
   const [promptFolders, setPromptFolders] = useState([
-    { id: 'f1', name: '제조 지식 에이전트', prompts: ['p1', 'p2'] },
     { id: 'f2', name: '전자 상거래 에이전트', prompts: ['p3'] },
     { id: 'f3', name: 'F&B 트렌드 분석 에이전트', prompts: [] },
   ]);
 
   const [allPrompts, setAllPrompts] = useState([
-    {
-      id: 'p1', folderId: 'f1', title: '그릴리 제품 군의 원재료 구성', date: 'Jan 24, 2024', author: 'You',
-      content: '그릴리 햄을 제조하기 위한 원재료를 Bill of Materials 로 정리하는 프롬프트입니다. 재료 검사 절차를 확인하시려면 [[insert prompt:SOP 관련 질문]]을 해주세요.',
-      promptTitle: '그릴리 BOM 프롬프트',
-      promptDescription: '그릴리 햄 BOM 관련 정보를 요청하는 프롬프트'
-    },
-    {
-      id: 'p2', folderId: 'f1', title: 'SOP 데이터 전송 가이드', date: 'Jan 23, 2024', author: 'Admin',
-      content: '변경된 SOP 데이터를 백엔드에 전송하는 절차를 안내합니다. [[insert prompt:JSON 파일 업로드]]를 통해 데이터를 제출해주세요.',
-      promptTitle: 'SOP 전송 프롬프트',
-      promptDescription: 'SOP 데이터 전송 절차 안내 프롬프트'
-    },
+
+
     {
       id: 'p3', folderId: 'f2', title: '주문 내역 조회 프롬프트', date: 'Feb 1, 2024', author: 'You',
       content: '최근 주문 내역을 조회하는 프롬프트입니다. [[insert prompt:주문 번호]]를 입력해주세요.',
