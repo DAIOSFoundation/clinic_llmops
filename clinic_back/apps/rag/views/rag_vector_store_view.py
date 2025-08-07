@@ -33,7 +33,6 @@ class RagVectorStoreAPIView(APIView):
     def get(self, request, name: str):
         try:
             start_time = time.time()
-            logger.info(f"🔍 유사도 검색 시작 - 질문: {question}")
             
             # 여러 방법으로 question 파라미터 추출 시도
             question = None
@@ -56,6 +55,8 @@ class RagVectorStoreAPIView(APIView):
                 raise AppException(
                     code=RAG_NEED_QUESTION, status_code=status.HTTP_400_BAD_REQUEST
                 )
+            
+            logger.info(f"🔍 유사도 검색 시작 - 질문: {question}")
 
             path = os.path.join(settings.RAG_FAISS_INDEX_PATH, name)
 
